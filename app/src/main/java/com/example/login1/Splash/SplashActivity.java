@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity {
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE);
         Intent intentLogin = new Intent(this, login.class);
         Intent intentMain = new Intent(this, MainActivity.class);
-        if (!TextUtils.isEmpty(Util.getUserMailPrefs(prefs))&&!TextUtils.isEmpty(Util.getUserPassPrefs(prefs))){
+        if (!TextUtils.isEmpty(Util.getUserToken(prefs))){
             startActivity(intentMain);
         }else{
             startActivity(intentLogin);

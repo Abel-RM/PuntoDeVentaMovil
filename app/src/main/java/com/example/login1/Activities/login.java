@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.login1.R;
+import com.example.login1.Utils.MetodosApi;
 import com.example.login1.Utils.Util;
 
 public class login extends AppCompatActivity {
@@ -40,6 +41,7 @@ public class login extends AppCompatActivity {
                 String email= textViewEmail.getText().toString();
                 String password = textViewPassword.getText().toString();
                 if (login(email,password)){
+                    //guardarToken(email,password);
                     goToMain();
                     saveOnPreferences(email,password);
                 }
@@ -62,6 +64,16 @@ public class login extends AppCompatActivity {
             editor.putString("pass",password);
             editor.apply();
         }
+    }
+    private boolean guardarToken(String email,String password){
+        String token=MetodosApi.getToken(email,password,this);
+        if (!TextUtils.isEmpty(token)){
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("token",token);
+            editor.apply();
+            return true;
+        }else
+            return false;
     }
 
     private boolean login(String email, String password){

@@ -9,4 +9,7 @@ public class Util {
     public static  String getUserPassPrefs(SharedPreferences prefs){
         return prefs.getString("pass","");
     }
+    public static  String getUserToken(SharedPreferences prefs){
+        return prefs.getString("token","");
+    }
 }
