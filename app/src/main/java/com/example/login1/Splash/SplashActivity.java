@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.example.login1.Activities.MainActivity;
 import com.example.login1.Activities.login;
@@ -22,7 +23,8 @@ public class SplashActivity extends AppCompatActivity {
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE);
         Intent intentLogin = new Intent(this, login.class);
         Intent intentMain = new Intent(this, MainActivity.class);
-        if (!TextUtils.isEmpty(Util.getUserToken(prefs))){
+        String token = Util.getUserToken(prefs);
+        if (!TextUtils.isEmpty(token)){
             startActivity(intentMain);
         }else{
             startActivity(intentLogin);

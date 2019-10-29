@@ -40,8 +40,7 @@ public class login extends AppCompatActivity {
             public void onClick(View view) {
                 String email= textViewEmail.getText().toString();
                 String password = textViewPassword.getText().toString();
-                if (login(email,password)){
-                    //guardarToken(email,password);
+                if (login(email,password)&&guardarToken(email,password)){
                     goToMain();
                     saveOnPreferences(email,password);
                 }
@@ -72,16 +71,16 @@ public class login extends AppCompatActivity {
             editor.putString("token",token);
             editor.apply();
             return true;
-        }else
+        }else{
+            Toast.makeText(this,"Algo salio mal",Toast.LENGTH_LONG).show();
             return false;
+        }
+
     }
 
     private boolean login(String email, String password){
         if (!isValidEmail(email)){
             Toast.makeText(this,"Email is not valid, plase try again",Toast.LENGTH_LONG).show();
-            return false;
-        }else if (!isValidPassword(password)){
-            Toast.makeText(this,"password is not valid, plase try again",Toast.LENGTH_LONG).show();
             return false;
         }else
             return true;
@@ -97,9 +96,7 @@ public class login extends AppCompatActivity {
         return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private boolean isValidPassword(String email){
-        return email.length()>4;
-    }
+
 
     private void goToMain(){
         Intent intent= new Intent(this,MainActivity.class);
