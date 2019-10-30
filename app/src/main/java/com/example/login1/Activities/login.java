@@ -24,6 +24,7 @@ public class login extends AppCompatActivity {
     private Button btnLogin;
     private Switch switchRemember;
     private SharedPreferences prefs;
+    public static String UserToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class login extends AppCompatActivity {
         bindUI();
 
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
+
         setCredentialsIfExist();
 
 
@@ -40,7 +42,7 @@ public class login extends AppCompatActivity {
             public void onClick(View view) {
                 String email= textViewEmail.getText().toString();
                 String password = textViewPassword.getText().toString();
-                if (login(email,password)&&guardarToken(email,password)){
+                if (login(email)&&guardarToken(email,password)){
                     goToMain();
                     saveOnPreferences(email,password);
                 }
@@ -48,6 +50,7 @@ public class login extends AppCompatActivity {
         });
 
     }
+
     private void setCredentialsIfExist(){
         String email= Util.getUserMailPrefs(prefs);
         String pass= Util.getUserPassPrefs(prefs);
@@ -61,12 +64,16 @@ public class login extends AppCompatActivity {
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("email",email);
             editor.putString("pass",password);
+            editor.putString("token",UserToken);
             editor.apply();
         }
     }
     private boolean guardarToken(String email,String password){
-        String token=MetodosApi.getToken(email,password,this);
-        if (!TextUtils.isEmpty(token)){
+        MetodosApi obj = new MetodosApi();
+        obj.getToken(email,password,this);
+        String token= Util.getUserToken(prefs);
+        Toast.makeText(this,token,Toast.LENGTH_LONG).show();
+        if (token.length()>15){
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("token",token);
             editor.apply();
@@ -78,7 +85,7 @@ public class login extends AppCompatActivity {
 
     }
 
-    private boolean login(String email, String password){
+    private boolean login(String email){
         if (!isValidEmail(email)){
             Toast.makeText(this,"Email is not valid, plase try again",Toast.LENGTH_LONG).show();
             return false;
@@ -98,7 +105,7 @@ public class login extends AppCompatActivity {
 
 
 
-    private void goToMain(){
+    private void goToMain( ){
         Intent intent= new Intent(this,MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

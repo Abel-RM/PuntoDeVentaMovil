@@ -9,8 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.example.login1.R;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,5 +57,6 @@ public class MainActivity extends AppCompatActivity {
     }
     private void removeSharedPreferences(){
         prefs.edit().clear().apply();
+
     }
 }
