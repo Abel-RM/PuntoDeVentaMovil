@@ -9,19 +9,26 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
 import com.example.login1.R;
+import com.example.login1.Utils.MetodosApi;
+import com.example.login1.Utils.Util;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
-
+    private TextView tokenView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
+        tokenView= (TextView) findViewById(R.id.viewMain);
+        tokenView.setText(login.UserToken);
+
 
     }
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
@@ -14,9 +15,18 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.login1.R;
 import com.example.login1.Utils.MetodosApi;
 import com.example.login1.Utils.Util;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class login extends AppCompatActivity {
     private TextView textViewEmail;
@@ -24,7 +34,8 @@ public class login extends AppCompatActivity {
     private Button btnLogin;
     private Switch switchRemember;
     private SharedPreferences prefs;
-    public static String UserToken;
+    public static boolean log=false;
+    public static String UserToken="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +53,13 @@ public class login extends AppCompatActivity {
             public void onClick(View view) {
                 String email= textViewEmail.getText().toString();
                 String password = textViewPassword.getText().toString();
-                if (login(email)&&guardarToken(email,password)){
-                    goToMain();
-                    saveOnPreferences(email,password);
+                if (login(email)){
+                    getToken(email,password,com.example.login1.Activities.login.this);
                 }
+
+
+
+
             }
         });
 
@@ -59,6 +73,7 @@ public class login extends AppCompatActivity {
             textViewPassword.setText(pass);
         }
     }
+
     private void saveOnPreferences(String email,String password){
         if (switchRemember.isChecked()){
             SharedPreferences.Editor editor = prefs.edit();
@@ -67,22 +82,6 @@ public class login extends AppCompatActivity {
             editor.putString("token",UserToken);
             editor.apply();
         }
-    }
-    private boolean guardarToken(String email,String password){
-        MetodosApi obj = new MetodosApi();
-        obj.getToken(email,password,this);
-        String token= Util.getUserToken(prefs);
-        Toast.makeText(this,token,Toast.LENGTH_LONG).show();
-        if (token.length()>15){
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("token",token);
-            editor.apply();
-            return true;
-        }else{
-            Toast.makeText(this,"Algo salio mal",Toast.LENGTH_LONG).show();
-            return false;
-        }
-
     }
 
     private boolean login(String email){
@@ -104,10 +103,42 @@ public class login extends AppCompatActivity {
     }
 
 
-
     private void goToMain( ){
         Intent intent= new Intent(this,MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+    public void getToken(final String email, final String password,Context context){
+        String url = "http://pvmovil.westus.azurecontainer.io/api/Usuarios/Login/";
+        final JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("Email",email);
+            jsonBody.put("Password",password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            UserToken=response.getString("Token");
+                            saveOnPreferences(email,password);
+                            goToMain();
+
+                        } catch (JSONException e) {
+
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(com.example.login1.Activities.login.this,error.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(stringRequest);
     }
 }
