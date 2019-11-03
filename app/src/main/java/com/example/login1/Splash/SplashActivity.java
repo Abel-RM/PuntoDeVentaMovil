@@ -1,29 +1,30 @@
 package com.example.login1.Splash;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.login1.Activities.MainActivity;
+import com.example.login1.Activities.ActivitySurtidor;
+import com.example.login1.Activities.ActivityVendedor;
 import com.example.login1.Activities.login;
+import com.example.login1.Models.Usuario;
 import com.example.login1.Utils.Util;
+import com.example.login1.Utils.VolleySingleton;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SplashActivity extends AppCompatActivity {
     private SharedPreferences prefs;
+    private RequestQueue mQueue;
+    public static Usuario userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,14 @@ public class SplashActivity extends AppCompatActivity {
         String email = Util.getUserMailPrefs(prefs);
         String password = Util.getUserPassPrefs(prefs);
         String url = "http://pvmovil.westus.azurecontainer.io/api/Usuarios/Login/";
+        mQueue = VolleySingleton.getInstance(this).getRequestQueue();
+        validar(email,password,url);
+
+
+
+    }
+    private void validar(String email,String password, String url){
+
         final JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("Email",email);
@@ -44,14 +53,27 @@ public class SplashActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+
                         try {
+
                             login.UserToken=response.getString("Token");
+
+                            Gson gson = new Gson();
+                            userData = gson.fromJson(response.toString(), Usuario.class);
 
                         } catch (JSONException e) {
 
                         }
-                        Intent intentMain = new Intent(com.example.login1.Splash.SplashActivity.this, MainActivity.class);
-                        startActivity(intentMain);
+                        if (userData.getRol().equals("Vendedor")){
+                            pantallaVendedor();
+                        }else
+                            if (userData.getRol().equals("Surtidor")){
+                                pantallaSurtidor();
+                            }
+
+
+
+
 
                     }
                 },
@@ -64,12 +86,20 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 }
         );
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-
+        mQueue.add(stringRequest);
 
         finish();
-
+    }
+    private void pantallaVendedor(){
+        Intent intentMain = new Intent(com.example.login1.Splash.SplashActivity.this, ActivityVendedor.class);
+        startActivity(intentMain);
+    }
+    private void pantallaSurtidor(){
+        Intent intentMain = new Intent(com.example.login1.Splash.SplashActivity.this, ActivitySurtidor.class);
+        startActivity(intentMain);
     }
 
 }
+
+
+

@@ -1,8 +1,6 @@
 package com.example.login1.Activities;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,24 +8,28 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-
+import com.example.login1.Models.Usuario;
 import com.example.login1.R;
-import com.example.login1.Utils.MetodosApi;
-import com.example.login1.Utils.Util;
+import com.google.gson.Gson;
 
 
-public class MainActivity extends AppCompatActivity {
 
+
+public class ActivityVendedor extends AppCompatActivity {
     private SharedPreferences prefs;
     private TextView tokenView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_vendedor);
 
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
         tokenView= (TextView) findViewById(R.id.viewMain);
-        tokenView.setText(login.UserToken);
+
+
+        //tokenView.setText(us.getImagenRuta());
 
 
     }

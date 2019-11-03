@@ -1,12 +1,9 @@
 package com.example.login1.Activities;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
@@ -22,9 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.login1.R;
-import com.example.login1.Utils.MetodosApi;
 import com.example.login1.Utils.Util;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,8 +29,9 @@ public class login extends AppCompatActivity {
     private Button btnLogin;
     private Switch switchRemember;
     private SharedPreferences prefs;
-    public static boolean log=false;
     public static String UserToken="";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +100,7 @@ public class login extends AppCompatActivity {
 
 
     private void goToMain( ){
-        Intent intent= new Intent(this,MainActivity.class);
+        Intent intent= new Intent(this, ActivityVendedor.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
@@ -123,12 +119,14 @@ public class login extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         try {
                             UserToken=response.getString("Token");
+
                             saveOnPreferences(email,password);
                             goToMain();
 
                         } catch (JSONException e) {
 
                         }
+
                     }
                 },
                 new Response.ErrorListener() {
