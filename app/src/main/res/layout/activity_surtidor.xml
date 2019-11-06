@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".Activities.ActivitySurtidor"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context="com.example.login1.Activities.ActivitySurtidor">
 
-    >
-
+    <AutoCompleteTextView
+        android:id="@+id/actv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:completionHint="Select a country"
+        android:completionThreshold="1"
+        android:dropDownAnchor="@id/text_view_countries"
+        android:hint="Select a country"
+        android:popupBackground="@color/colorAccent" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:id="@+id/text_view_countries"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Activity Surtidor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:paddingBottom="16dp"
+        android:text="Countries"
+        android:textSize="20sp" />
+
+</LinearLayout>

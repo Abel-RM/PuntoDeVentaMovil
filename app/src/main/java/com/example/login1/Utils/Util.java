@@ -13,6 +13,9 @@ public class Util extends AppCompatActivity {
     public static  String getUserPassPrefs(SharedPreferences prefs){
         return prefs.getString("pass","");
     }
+    public static  boolean getUserRemember(SharedPreferences prefs){
+        return prefs.getBoolean("remember",false);
+    }
     public static  String getUserToken(SharedPreferences prefs){
         return prefs.getString("token","");
     }

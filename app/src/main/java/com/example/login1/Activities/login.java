@@ -11,15 +11,17 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.login1.Models.Usuario;
 import com.example.login1.R;
+import com.example.login1.Splash.SplashActivity;
 import com.example.login1.Utils.Util;
+import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,9 +40,8 @@ public class login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         bindUI();
-
+        switchRemember=findViewById(R.id.switchRemember);
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
-
         setCredentialsIfExist();
 
 
@@ -55,7 +56,6 @@ public class login extends AppCompatActivity {
 
 
 
-
             }
         });
 
@@ -64,9 +64,11 @@ public class login extends AppCompatActivity {
     private void setCredentialsIfExist(){
         String email= Util.getUserMailPrefs(prefs);
         String pass= Util.getUserPassPrefs(prefs);
+        boolean check= Util.getUserRemember(prefs);
         if (!TextUtils.isEmpty(email)&&!TextUtils.isEmpty(pass)){
             textViewEmail.setText(email);
             textViewPassword.setText(pass);
+            switchRemember.setChecked(check);
         }
     }
 
@@ -76,6 +78,7 @@ public class login extends AppCompatActivity {
             editor.putString("email",email);
             editor.putString("pass",password);
             editor.putString("token",UserToken);
+            editor.putBoolean("remember",switchRemember.isChecked());
             editor.apply();
         }
     }
@@ -99,10 +102,19 @@ public class login extends AppCompatActivity {
     }
 
 
-    private void goToMain( ){
-        Intent intent= new Intent(this, ActivityVendedor.class);
+    private void pantallaVendedor(){
+        Intent intent = new Intent(this, ActivityVendedor.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+    private void pantallaSurtidor(){
+        Intent intent = new Intent(this, ActivitySurtidor.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+    private void removeSharedPreferences(){
+        prefs.edit().clear().apply();
+
     }
     public void getToken(final String email, final String password,Context context){
         String url = "http://pvmovil.westus.azurecontainer.io/api/Usuarios/Login/";
@@ -117,11 +129,23 @@ public class login extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        removeSharedPreferences();
                         try {
                             UserToken=response.getString("Token");
 
-                            saveOnPreferences(email,password);
-                            goToMain();
+                            if (switchRemember.isChecked()){
+                                saveOnPreferences(email,password);
+                            }
+
+                            Gson gson = new Gson();
+                            SplashActivity.userData = gson.fromJson(response.toString(), Usuario.class);
+
+                            if (SplashActivity.userData.getRol().equals("Vendedor")){
+                                pantallaVendedor();
+                            }else
+                            if (SplashActivity.userData.getRol().equals("Surtidor")){
+                                pantallaSurtidor();
+                            }else Toast.makeText(com.example.login1.Activities.login.this,"Usuario invalido",Toast.LENGTH_LONG).show();
 
                         } catch (JSONException e) {
 

@@ -10,8 +10,8 @@
 
     <AutoCompleteTextView
         android:id="@+id/actv"
-        android:layout_width="360dp"
-        android:layout_height="54dp"
+        android:layout_width="645dp"
+        android:layout_height="58dp"
         android:completionHint="Select a country"
         android:completionThreshold="1"
         android:dropDownAnchor="@id/text_view_countries"
@@ -19,51 +19,49 @@
         android:popupBackground="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.313"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.029" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/text_view_countries"
-        android:layout_width="381dp"
-        android:layout_height="42dp"
-        android:paddingLeft="15dp"
+        android:layout_width="989dp"
+        android:layout_height="94dp"
         android:paddingBottom="16dp"
         android:text="Countries"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintHorizontal_bias="0.457"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.147"
-        />
+        app:layout_constraintVertical_bias="0.178" />
 
     <Button
         android:id="@+id/button"
-        android:layout_width="119dp"
-        android:layout_height="50dp"
+        android:layout_width="160dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="386dp"
         android:text="Historial"
-        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.013"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.615"
+        app:layout_constraintStart_toStartOf="@+id/actv"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.267" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="113dp"
-        android:layout_height="50dp"
+        android:layout_width="160dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="138dp"
         android:text="Categorias"
-        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintHorizontal_bias="0.935"
+        app:layout_constraintStart_toStartOf="@+id/button"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.267" />
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,15 +10,28 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 
 public class ActivitySurtidor extends AppCompatActivity {
     private SharedPreferences prefs;
-
+    private static final String[] COUNTRIES = new String[]{
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola"
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_surtidor);
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
+        String[] countries = getResources().getStringArray(R.array.countries);
+
+        AutoCompleteTextView editText = findViewById(R.id.actv);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                R.layout.custom_list_item, R.id.text_view_list_item, countries);
+        editText.setAdapter(adapter);
+        //editText.setThreshold(1);
+
     }
 
 
