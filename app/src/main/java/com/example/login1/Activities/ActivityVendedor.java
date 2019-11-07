@@ -1,13 +1,23 @@
 package com.example.login1.Activities;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SearchRecentSuggestionsProvider;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.method.KeyListener;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowInsets;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -16,35 +26,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.login1.Models.Usuario;
 import com.example.login1.R;
-import com.example.login1.Splash.SplashActivity;
-import com.bumptech.glide.Glide;
 import com.example.login1.Utils.VolleySingleton;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class ActivityVendedor extends AppCompatActivity {
     private SharedPreferences prefs;
-    private TextView tokenView;
-    private Button btnVentas;
-    private Button btnHistorial;
-    private TextView viewVendedor;
-    private ImageView img;
+
     private RequestQueue mQueue;
+    static AutoCompleteTextView editText;
+    static ArrayList<String> prod=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,29 +58,32 @@ public class ActivityVendedor extends AppCompatActivity {
         setContentView(R.layout.activity_vendedor);
         mQueue = VolleySingleton.getInstance(this).getRequestQueue();
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
-        tokenView= findViewById(R.id.viewMain);
 
-        String[] countries = getResources().getStringArray(R.array.countries);
+        getProducts(this);
 
-        final AutoCompleteTextView editText = findViewById(R.id.actv);
-        final TextView ñ= findViewById(R.id.text_view_countries);
+        editText = findViewById(R.id.actv);
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.custom_list_item, R.id.text_view_list_item, countries);
-
-
+                R.layout.custom_list_item, R.id.text_view_list_item, prod);
         editText.setAdapter(adapter);
+
+
         editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(com.example.login1.Activities.ActivityVendedor.this,
-                        adapterView.getItemAtPosition(i).toString() ,Toast.LENGTH_LONG).show();
                 editText.setText("");
             }
         });
 
-
-
-
+        editText.addTextChangedListener(
+                new TextWatcher() {
+                    @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
+                    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+                    @Override
+                    public void afterTextChanged(final Editable s) {
+                        searchProducts(ActivityVendedor.this,editText.getText().toString());
+                    }
+                }
+        );
 
     }
 
@@ -97,10 +106,7 @@ public class ActivityVendedor extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
         }
-
-
 
     }
     private void logOut(){
@@ -113,35 +119,79 @@ public class ActivityVendedor extends AppCompatActivity {
 
     }
 
-    private void getProducts() {
-        String url = "http://pvmovil.westus.azurecontainer.io/api/Productos";
-        final JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("Token",login.UserToken);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
+    private void searchProducts(final Context context,String product) {
+        String url = "http://pvmovil.westus.azurecontainer.io/api/Productos/BuscarProductos?valor="+product;
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
-                (Request.Method.GET, url, maParams, new Response.Listener<JSONArray>() {
-
+                (Request.Method.GET, url,null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-
-
+                        String res[] =new String[response.length()];
+                        for (int i=0;i<response.length();i++){
+                            try {
+                                res[i]=response.getJSONObject(i).getString("Nombre");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        for (int j=0;j<res.length;j++){
+                            Toast.makeText(context,res[j],Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
-
                     }
-                });
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> cabeceras = new HashMap<String, String>();
+                cabeceras.put("Token", login.UserToken);
+                return cabeceras;
+            }
+        };
         mQueue.add(jsonArrayRequest);
 
+    }
+
+
+
+    private void getProducts(final Context context) {
+        String url = "http://pvmovil.westus.azurecontainer.io/api/Productos";
+
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url,null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        for (int i=0;i<response.length();i++){
+                            try {
+                                prod.add(response.getJSONObject(i).getString("Nombre"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> cabeceras = new HashMap<String, String>();
+                cabeceras.put("Token", login.UserToken);
+                return cabeceras;
+            }
+        };
+        mQueue.add(jsonArrayRequest);
 
     }
+
 
 }

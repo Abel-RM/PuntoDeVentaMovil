@@ -5,65 +5,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context="com.example.login1.Activities.ActivityVendedor">
+    android:padding="10dp"
+    tools:context="com.example.login1.Activities.ActivityVendedor"
+    tools:layout_editor_absoluteY="81dp">
 
     <AutoCompleteTextView
         android:id="@+id/actv"
-        android:layout_width="360dp"
-        android:layout_height="54dp"
-        android:completionHint="Select a country"
+        android:layout_width="match_parent"
+        android:layout_height="51dp"
+        android:completionHint="Selecciona un producto"
         android:completionThreshold="1"
         android:dropDownAnchor="@id/text_view_countries"
         android:hint="Buscar productos"
         android:popupBackground="@color/colorAccent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.313"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.029" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/text_view_countries"
-        android:layout_width="381dp"
+        android:layout_width="match_parent"
         android:layout_height="42dp"
+        android:layout_marginTop="24dp"
         android:paddingLeft="15dp"
         android:paddingBottom="16dp"
-        android:text="Countries"
+        android:text=""
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.533"
+        app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.147"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/actv"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button"
-        android:layout_width="119dp"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:text="Historial"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.013"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.267" />
+        app:layout_constraintTop_toBottomOf="@+id/actv"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="113dp"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:layout_marginTop="52dp"
         android:text="Categorias"
-        android:textSize="12sp"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
+        app:layout_constraintHorizontal_bias="0.07"
         app:layout_constraintStart_toEndOf="@+id/button"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.267" />
+        app:layout_constraintTop_toTopOf="@+id/actv"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
