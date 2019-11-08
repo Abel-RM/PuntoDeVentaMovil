@@ -17,12 +17,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +43,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,8 +53,11 @@ public class ActivityVendedor extends AppCompatActivity {
     private SharedPreferences prefs;
 
     private RequestQueue mQueue;
+    private ListView list;
     static AutoCompleteTextView editText;
     static ArrayList<String> prod=new ArrayList<>();
+    static ArrayList<String> selectedProd=new ArrayList<>();
+    static ArrayList<String> images=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,31 +66,37 @@ public class ActivityVendedor extends AppCompatActivity {
         mQueue = VolleySingleton.getInstance(this).getRequestQueue();
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
 
-        getProducts(this);
+
+        list=(ListView)findViewById(R.id.listView);
+
+
+
+
+
 
         editText = findViewById(R.id.actv);
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                R.layout.custom_list_item, R.id.text_view_list_item, prod);
-        editText.setAdapter(adapter);
 
 
+
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                getProducts();
+                final ArrayAdapter<String> adapter = new ArrayAdapter<String>(ActivityVendedor.this,
+                        R.layout.custom_list_item, R.id.text_view_list_item, prod);
+                editText.setAdapter(adapter);
+            }
+        });
         editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedProd.add(adapterView.getItemAtPosition(i).toString());
+                MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd,images);
+                list.setAdapter(adapter1);
                 editText.setText("");
             }
         });
 
-        editText.addTextChangedListener(
-                new TextWatcher() {
-                    @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
-                    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-                    @Override
-                    public void afterTextChanged(final Editable s) {
-                        searchProducts(ActivityVendedor.this,editText.getText().toString());
-                    }
-                }
-        );
 
     }
 
@@ -125,48 +138,6 @@ public class ActivityVendedor extends AppCompatActivity {
                 (Request.Method.GET, url,null, new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        String res[] =new String[response.length()];
-                        for (int i=0;i<response.length();i++){
-                            try {
-                                res[i]=response.getJSONObject(i).getString("Nombre");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        for (int j=0;j<res.length;j++){
-                            Toast.makeText(context,res[j],Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                    }
-                })
-        {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> cabeceras = new HashMap<String, String>();
-                cabeceras.put("Token", login.UserToken);
-                return cabeceras;
-            }
-        };
-        mQueue.add(jsonArrayRequest);
-
-    }
-
-
-
-    private void getProducts(final Context context) {
-        String url = "http://pvmovil.westus.azurecontainer.io/api/Productos";
-
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
-                (Request.Method.GET, url,null, new Response.Listener<JSONArray>() {
-
-                    @Override
-                    public void onResponse(JSONArray response) {
-
                         for (int i=0;i<response.length();i++){
                             try {
                                 prod.add(response.getJSONObject(i).getString("Nombre"));
@@ -194,4 +165,44 @@ public class ActivityVendedor extends AppCompatActivity {
     }
 
 
+
+    private void getProducts() {
+        String url = "http://pvmovil.westus.azurecontainer.io/api/Productos";
+
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
+                (Request.Method.GET, url,null, new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        for (int i=0;i<response.length();i++){
+                            try {
+                                prod.add(response.getJSONObject(i).getString("Nombre"));
+                                images.add(response.getJSONObject(i).getString("ImagenRuta"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> cabeceras = new HashMap<String, String>();
+                cabeceras.put("Token", login.UserToken);
+                return cabeceras;
+            }
+        };
+        mQueue.add(jsonArrayRequest);
+
+    }
+
+
 }
+

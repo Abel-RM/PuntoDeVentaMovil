@@ -17,7 +17,7 @@
         android:completionThreshold="1"
         android:dropDownAnchor="@id/text_view_countries"
         android:hint="Buscar productos"
-        android:popupBackground="@color/colorAccent"
+        android:popupBackground="@color/colorBuscador"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/button"
         app:layout_constraintEnd_toStartOf="@+id/button"

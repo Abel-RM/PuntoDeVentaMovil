@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -17,7 +16,6 @@ import com.example.login1.Models.Usuario;
 import com.example.login1.Utils.Util;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -71,10 +69,6 @@ public class SplashActivity extends AppCompatActivity {
                                 pantallaSurtidor();
                             }
 
-
-
-
-
                     }
                 },
                 new Response.ErrorListener() {
@@ -91,12 +85,14 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
     private void pantallaVendedor(){
-        Intent intentMain = new Intent(com.example.login1.Splash.SplashActivity.this, ActivityVendedor.class);
-        startActivity(intentMain);
+        Intent intent = new Intent(com.example.login1.Splash.SplashActivity.this, ActivityVendedor.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
     private void pantallaSurtidor(){
-        Intent intentMain = new Intent(com.example.login1.Splash.SplashActivity.this, ActivitySurtidor.class);
-        startActivity(intentMain);
+        Intent intent = new Intent(com.example.login1.Splash.SplashActivity.this, ActivitySurtidor.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
 
 }
