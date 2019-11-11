@@ -66,17 +66,9 @@ public class ActivityVendedor extends AppCompatActivity {
         mQueue = VolleySingleton.getInstance(this).getRequestQueue();
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
 
-
         list=(ListView)findViewById(R.id.listView);
 
-
-
-
-
-
         editText = findViewById(R.id.actv);
-
-
 
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -94,6 +86,14 @@ public class ActivityVendedor extends AppCompatActivity {
                 MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd,images);
                 list.setAdapter(adapter1);
                 editText.setText("");
+            }
+        });
+
+        ImageView camara= findViewById(R.id.camara);
+        camara.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(ActivityVendedor.this,"Camara",Toast.LENGTH_SHORT).show();
             }
         });
 
