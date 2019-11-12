@@ -18,13 +18,13 @@ public  class MyAdapter extends BaseAdapter {
     private Context context;
     private int layout;
     private List<String> names;
-    private List<String> imgs;
 
-    public MyAdapter(Context context, int layout, List<String> names,List<String> imgs) {
+
+    public MyAdapter(Context context, int layout, List<String> names) {
         this.context = context;
         this.layout = layout;
         this.names = names;
-        this.imgs=imgs;
+
     }
 
     @Override
@@ -57,7 +57,7 @@ public  class MyAdapter extends BaseAdapter {
 
         ImageView img = (ImageView) v.findViewById(R.id.imageView);
         int imgPosition= ActivityVendedor.prod.indexOf(currentName);
-        Glide.with(context.getApplicationContext()).load(imgs.get(imgPosition)).into(img);
+        Glide.with(context.getApplicationContext()).load(ActivityVendedor.productos.get(imgPosition).getImagenRuta()).into(img);
 
         return v;
     }

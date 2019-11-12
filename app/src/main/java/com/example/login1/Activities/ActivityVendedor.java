@@ -35,8 +35,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.example.login1.Models.Producto;
+import com.example.login1.Models.Usuario;
 import com.example.login1.R;
 import com.example.login1.Utils.VolleySingleton;
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,13 +55,13 @@ import java.util.TimerTask;
 
 public class ActivityVendedor extends AppCompatActivity {
     private SharedPreferences prefs;
-
     private RequestQueue mQueue;
     private ListView list;
     static AutoCompleteTextView editText;
+    static ArrayList<Producto> productos=new ArrayList<>();
     static ArrayList<String> prod=new ArrayList<>();
     static ArrayList<String> selectedProd=new ArrayList<>();
-    static ArrayList<String> images=new ArrayList<>();
+    private TextView txTotal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,7 @@ public class ActivityVendedor extends AppCompatActivity {
         setContentView(R.layout.activity_vendedor);
         mQueue = VolleySingleton.getInstance(this).getRequestQueue();
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
-
+        txTotal=findViewById(R.id.precio);
         list=(ListView)findViewById(R.id.listView);
 
         editText = findViewById(R.id.actv);
@@ -73,9 +77,11 @@ public class ActivityVendedor extends AppCompatActivity {
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
+                productos.clear();
+                prod.clear();
                 getProducts();
                 final ArrayAdapter<String> adapter = new ArrayAdapter<String>(ActivityVendedor.this,
-                        R.layout.custom_list_item, R.id.text_view_list_item, prod);
+                        R.layout.custom_list_item, R.id.text_view_list_item,prod);
                 editText.setAdapter(adapter);
             }
         });
@@ -83,9 +89,12 @@ public class ActivityVendedor extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 selectedProd.add(adapterView.getItemAtPosition(i).toString());
-                MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd,images);
+                MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
                 list.setAdapter(adapter1);
                 editText.setText("");
+                txTotal.setText("Total: $ "+calcularTotal(productos,selectedProd));
+
+
             }
         });
 
@@ -132,7 +141,7 @@ public class ActivityVendedor extends AppCompatActivity {
 
     }
 
-    private void searchProducts(final Context context,String product) {
+    private void searchProducts(String product) {
         String url = "http://pvmovil.westus.azurecontainer.io/api/Productos/BuscarProductos?valor="+product;
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
                 (Request.Method.GET, url,null, new Response.Listener<JSONArray>() {
@@ -178,9 +187,12 @@ public class ActivityVendedor extends AppCompatActivity {
 
                         for (int i=0;i<response.length();i++){
                             try {
+                                Gson gson = new Gson();
+                                productos.add(gson.fromJson(response.getJSONObject(i).toString(), Producto.class));
                                 prod.add(response.getJSONObject(i).getString("Nombre"));
-                                images.add(response.getJSONObject(i).getString("ImagenRuta"));
-                            } catch (JSONException e) {
+                                //images.add(response.getJSONObject(i).getString("ImagenRuta"));
+
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -201,6 +213,22 @@ public class ActivityVendedor extends AppCompatActivity {
         };
         mQueue.add(jsonArrayRequest);
 
+    }
+
+    private Double calcularTotal(ArrayList<Producto> lista,ArrayList<String> select){
+        Double total=0.0;
+        int index=0;
+        for (String item:select){
+
+            for (int i=0;i<lista.size();i++){
+                if (lista.get(i).getNombre().equals(item)){
+                    index=i;
+                    break;
+                }
+            }
+            total=total+lista.get(index).getPrecioMenudeo();
+        }
+        return total;
     }
 
 

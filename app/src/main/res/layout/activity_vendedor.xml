@@ -69,18 +69,28 @@
         android:layout_marginBottom="10dp"
         android:background="@color/colorBuscador" />
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:id="@+id/cardView"
         android:layout_width="match_parent"
+        android:orientation="horizontal"
         android:layout_height="70dp">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Aqui esta un text view" />
+            android:id="@+id/precio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="16dp"
+            android:layout_weight="2"
+            android:text="Total:" />
 
-        />
-    </androidx.cardview.widget.CardView>
+        <Button
+            android:id="@+id/botonComprar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pagar"/>
+    </LinearLayout>
 
 
 </LinearLayout>
