@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 
 public class ActivityVendedor extends AppCompatActivity {
@@ -60,8 +62,9 @@ public class ActivityVendedor extends AppCompatActivity {
     static AutoCompleteTextView editText;
     static ArrayList<Producto> productos=new ArrayList<>();
     static ArrayList<String> prod=new ArrayList<>();
-    static ArrayList<String> selectedProd=new ArrayList<>();
-    private TextView txTotal;
+    static ArrayList<Producto> selectedProd=new ArrayList<>();
+    static TextView txTotal;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +74,8 @@ public class ActivityVendedor extends AppCompatActivity {
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
         txTotal=findViewById(R.id.precio);
         list=(ListView)findViewById(R.id.listView);
-
         editText = findViewById(R.id.actv);
+
 
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -88,15 +91,19 @@ public class ActivityVendedor extends AppCompatActivity {
         editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedProd.add(adapterView.getItemAtPosition(i).toString());
+                Producto prod = new Producto();
+                prod.setNombre(adapterView.getItemAtPosition(i).toString());
+                prod.setPedidos(1);
+                selectedProd.add(prod);
                 MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
                 list.setAdapter(adapter1);
                 editText.setText("");
                 txTotal.setText("Total: $ "+calcularTotal(productos,selectedProd));
 
-
             }
         });
+
+
 
         ImageView camara= findViewById(R.id.camara);
         camara.setOnClickListener(new View.OnClickListener() {
@@ -215,18 +222,23 @@ public class ActivityVendedor extends AppCompatActivity {
 
     }
 
-    private Double calcularTotal(ArrayList<Producto> lista,ArrayList<String> select){
+    public static Double calcularTotal(ArrayList<Producto> lista,ArrayList<Producto> select){
         Double total=0.0;
         int index=0;
-        for (String item:select){
+        for (Producto item:select){
 
             for (int i=0;i<lista.size();i++){
-                if (lista.get(i).getNombre().equals(item)){
+                if (lista.get(i).getNombre().equals(item.getNombre())){
                     index=i;
                     break;
                 }
             }
-            total=total+lista.get(index).getPrecioMenudeo();
+            int cant=item.getPedidos();
+            if (cant>2){
+                total=total+lista.get(index).getPrecioMayoreo()*cant;
+            }else
+                total=total+lista.get(index).getPrecioMenudeo()*cant;
+
         }
         return total;
     }

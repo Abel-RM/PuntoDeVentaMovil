@@ -29,6 +29,9 @@ public class Producto {
         this.Estado = Estado;
         this.Imagen = Imagen;
     }
+    public Producto(){
+
+    }
 
     public String getId() {
         return Id;
