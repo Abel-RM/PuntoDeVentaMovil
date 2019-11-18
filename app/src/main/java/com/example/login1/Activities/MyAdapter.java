@@ -1,24 +1,24 @@
 package com.example.login1.Activities;
-
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.example.login1.Models.Producto;
 import com.example.login1.R;
-
 import java.util.ArrayList;
 import java.util.List;
+import static com.example.login1.Activities.ActivityVendedor.list;
+import static com.example.login1.Activities.ActivityVendedor.selectedProd;
 
 public  class MyAdapter extends BaseAdapter {
 
@@ -28,6 +28,9 @@ public  class MyAdapter extends BaseAdapter {
     private EditText cant;
     private View v;
     private String currentName;
+    private LinearLayout l;
+
+
 
     public MyAdapter(Context context, int layout, List<Producto> names) {
         this.context = context;
@@ -35,7 +38,6 @@ public  class MyAdapter extends BaseAdapter {
         this.names = names;
 
     }
-
     @Override
     public int getCount() {
         return this.names.size();
@@ -43,8 +45,6 @@ public  class MyAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-
-
         return this.names.get(i);
     }
 
@@ -55,63 +55,81 @@ public  class MyAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
-
         v = convertView;
-
         LayoutInflater layoutInflater=LayoutInflater.from(this.context);
         v=layoutInflater.inflate(R.layout.list_item,null);
 
         currentName = names.get(position).getNombre();
 
-        TextView textView =(TextView) v.findViewById(R.id.textView);
+        TextView textView =v.findViewById(R.id.textView);
         textView.setText(currentName);
 
-        ImageView img = (ImageView) v.findViewById(R.id.imageView);
+
+        l= v.findViewById(R.id.listItem);
+        l.setId(Integer.parseInt("2"+String.valueOf(position)+"74"));
+        OnSwipeListener listener = new OnSwipeListener(context,v,position);
+        l.setOnTouchListener(listener);
+
+        ImageView img =  v.findViewById(R.id.imageView);
         int imgPosition= ActivityVendedor.prod.indexOf(currentName);
         Glide.with(context.getApplicationContext()).load(ActivityVendedor.productos.get(imgPosition).getImagenRuta()).into(img);
 
 
+        cant=v.findViewById(R.id.editText);
+        cant.setId(position);
 
-        mostrarPrecios(position);
+        EditText tex=v.findViewById(position);
 
-        posisiones(ActivityVendedor.selectedProd);
-        cant.addTextChangedListener(
-                new TextWatcher() {
-                    @Override public void onTextChanged(CharSequence s, int start, int before, int count) { }
-                    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-                    @Override
-                    public void afterTextChanged(final Editable s) {
-                        try {
-                            ActivityVendedor.selectedProd.get(position).setPedidos(Integer.parseInt(cant.getText().toString()));
-                            ActivityVendedor.txTotal.setText("Total: $ "+ActivityVendedor.calcularTotal(ActivityVendedor.productos,ActivityVendedor.selectedProd));
-                        }catch (Exception e){
-                        }
-                        mostrarPrecios(position);
-
-                    }
-                }
-        );
+        mostrarPrecios(currentName);
+        posisiones(selectedProd,position);
 
 
+
+        tex.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                try {
+                    EditText tx =view.findViewById(view.getId());
+                    selectedProd.get(view.getId()).setPedidos(Integer.parseInt(tx.getText().toString()));
+                    ActivityVendedor.txTotal.setText("Total: $ "+ActivityVendedor.calcularTotal(ActivityVendedor.productos, selectedProd));
+
+                }catch (Exception e){ }
+
+                return false;
+            }
+        });
 
         return v;
     }
-    private void mostrarPrecios(int position){
-        TextView precioArticulo= v.findViewById(R.id.textViewPrecio);
-        for (Producto item:ActivityVendedor.productos ){
-            if (item.getNombre().equals(currentName)){
-                if (ActivityVendedor.selectedProd.get(position).getPedidos()>2){
-                    precioArticulo.setText("Precio: $"+String.valueOf(item.getPrecioMayoreo()));
-                }else
-                    precioArticulo.setText("Precio: $"+String.valueOf(item.getPrecioMenudeo()));
 
+
+    private void posisiones(ArrayList<Producto> prod,int position){
+        EditText tx;
+        tx=v.findViewById(position);
+        tx.setText(String.valueOf(prod.get(position).getPedidos()));
+
+    }
+
+
+    private void mostrarPrecios(String name){
+        TextView precioArticulo= v.findViewById(R.id.textViewPrecio);
+        Producto p = buscarProducto(ActivityVendedor.productos,name);
+
+        precioArticulo.setText("Normal: $"+String.valueOf(p.getPrecioMenudeo())+"\t\tMayoreo: "+String.valueOf(p.getPrecioMayoreo()));
+
+
+    }
+
+    private Producto buscarProducto(ArrayList<Producto> lista,String producto){
+        for(Producto item: lista){
+            if (item.getNombre().equals(producto)){
+                return item;
             }
         }
-    }
-    public void posisiones(ArrayList<Producto> prod){
-        for (Producto item:prod){
-            Toast.makeText(context,String.valueOf(item.getPedidos()),Toast.LENGTH_SHORT).show();
-        }
+        return null;
     }
 
 }
+
+
+

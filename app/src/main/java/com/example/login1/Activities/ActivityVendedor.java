@@ -1,30 +1,20 @@
 package com.example.login1.Activities;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SearchRecentSuggestionsProvider;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.method.KeyListener;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowInsets;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,34 +26,30 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.login1.Models.Producto;
-import com.example.login1.Models.Usuario;
 import com.example.login1.R;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
 
 
-public class ActivityVendedor extends AppCompatActivity {
+public class ActivityVendedor extends AppCompatActivity{
     private SharedPreferences prefs;
     private RequestQueue mQueue;
-    private ListView list;
+    //com.baoyz.swipemenulistview.SwipeMenuListView
+    static ListView list;
     static AutoCompleteTextView editText;
     static ArrayList<Producto> productos=new ArrayList<>();
     static ArrayList<String> prod=new ArrayList<>();
     static ArrayList<Producto> selectedProd=new ArrayList<>();
     static TextView txTotal;
+    static MyAdapter adapterList;
 
 
     @Override
@@ -73,9 +59,9 @@ public class ActivityVendedor extends AppCompatActivity {
         mQueue = VolleySingleton.getInstance(this).getRequestQueue();
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
         txTotal=findViewById(R.id.precio);
-        list=(ListView)findViewById(R.id.listView);
+        list=  findViewById(R.id.listView);
         editText = findViewById(R.id.actv);
-
+        adapterList = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
 
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -92,24 +78,50 @@ public class ActivityVendedor extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Producto prod = new Producto();
-                prod.setNombre(adapterView.getItemAtPosition(i).toString());
-                prod.setPedidos(1);
-                selectedProd.add(prod);
-                MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
-                list.setAdapter(adapter1);
-                editText.setText("");
-                txTotal.setText("Total: $ "+calcularTotal(productos,selectedProd));
+                String nombre =adapterView.getItemAtPosition(i).toString();
+                prod.setNombre(nombre);
+                //buscar(nombre)
+                if (true){
+                    prod.setPedidos(1);
+                    selectedProd.add(prod);
+                    MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
+                    list.setAdapter(adapter1);
+                    editText.setText("");
+                    txTotal.setText("Total: $ "+calcularTotal(productos,selectedProd));
+                }else editText.setText("");
+
 
             }
         });
 
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                new AlertDialog.Builder(ActivityVendedor.this)
+                        .setTitle("Borrar Producto")
+                        .setMessage("Estas seguro?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                selectedProd.remove(position);
+                                MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
+                                list.setAdapter(adapter1);
+                                txTotal.setText("Total: $ "+calcularTotal(productos,selectedProd));
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return true;
+            }
+        });
 
 
         ImageView camara= findViewById(R.id.camara);
         camara.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ActivityVendedor.this,"Camara",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ActivityVendedor.this, SimpleScannerActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -120,6 +132,9 @@ public class ActivityVendedor extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+    public Context getContext(){
+        return ActivityVendedor.this;
     }
 
     @Override
@@ -145,38 +160,6 @@ public class ActivityVendedor extends AppCompatActivity {
     }
     private void removeSharedPreferences(){
         prefs.edit().clear().apply();
-
-    }
-
-    private void searchProducts(String product) {
-        String url = "http://pvmovil.westus.azurecontainer.io/api/Productos/BuscarProductos?valor="+product;
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
-                (Request.Method.GET, url,null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        for (int i=0;i<response.length();i++){
-                            try {
-                                prod.add(response.getJSONObject(i).getString("Nombre"));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                    }
-                })
-        {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> cabeceras = new HashMap<String, String>();
-                cabeceras.put("Token", login.UserToken);
-                return cabeceras;
-            }
-        };
-        mQueue.add(jsonArrayRequest);
 
     }
 
@@ -234,7 +217,7 @@ public class ActivityVendedor extends AppCompatActivity {
                 }
             }
             int cant=item.getPedidos();
-            if (cant>2){
+            if (cant>5){
                 total=total+lista.get(index).getPrecioMayoreo()*cant;
             }else
                 total=total+lista.get(index).getPrecioMenudeo()*cant;
@@ -242,7 +225,21 @@ public class ActivityVendedor extends AppCompatActivity {
         }
         return total;
     }
+    public boolean buscar(String name){
+        for (Producto item: selectedProd){
+            if (item.getNombre().equals(name)){
+                return false;
+            }
+        }
+        return true;
+    }
+    public static Producto searchProductByCode(String code){
+        for (Producto item:productos ){
+            if (item.getCodigoBarra().equals(code))
+                return item;
+        }
+        return null;
+    }
 
 
 }
-
