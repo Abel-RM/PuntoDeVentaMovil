@@ -26,13 +26,18 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.login1.Models.Producto;
 import com.example.login1.R;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +55,7 @@ public class ActivityVendedor extends AppCompatActivity{
     static ArrayList<Producto> selectedProd=new ArrayList<>();
     static TextView txTotal;
     static MyAdapter adapterList;
+    static ArrayList<Producto> code= new ArrayList<>();
 
 
     @Override
@@ -60,6 +66,9 @@ public class ActivityVendedor extends AppCompatActivity{
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
         txTotal=findViewById(R.id.precio);
         list=  findViewById(R.id.listView);
+        String g =getIntent().getStringExtra("codigo");
+        //Producto p = ActivityVendedor.searchProductByCode(code);
+        //ActivityVendedor.selectedProd.add(p);
         editText = findViewById(R.id.actv);
         adapterList = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
 
@@ -129,6 +138,29 @@ public class ActivityVendedor extends AppCompatActivity{
     }
 
     @Override
+    public void onResume() {
+        getProducts();
+        try {
+            for(Producto item : code){
+                //Toast.makeText(this,item.getCodigoBarra(),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this,productos.get(0).getCodigoBarra(),Toast.LENGTH_SHORT).show();
+                //int x = productos.indexOf(item.getCodigoBarra());
+                Producto p= searchProductByCode(item.getCodigoBarra());
+                //Toast.makeText(this, p.getNombre(),Toast.LENGTH_SHORT).show();
+                item.setNombre(p.getNombre());
+            }
+            selectedProd.addAll(code);
+            MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
+            list.setAdapter(adapter1);
+
+        }catch (Exception e){
+            Toast.makeText(this, e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+
+        super.onResume();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
@@ -169,22 +201,24 @@ public class ActivityVendedor extends AppCompatActivity{
         String url = "http://pvmovil.westus.azurecontainer.io/api/Productos";
 
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
-                (Request.Method.GET, url,null, new Response.Listener<JSONArray>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url,null, new Response.Listener<JSONObject>() {
 
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
 
-                        for (int i=0;i<response.length();i++){
-                            try {
-                                Gson gson = new Gson();
-                                productos.add(gson.fromJson(response.getJSONObject(i).toString(), Producto.class));
-                                prod.add(response.getJSONObject(i).getString("Nombre"));
-                                //images.add(response.getJSONObject(i).getString("ImagenRuta"));
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                        try {
+                            Gson gson = new Gson();
+                            JSONArray array =response.getJSONArray("Data");
+                            for (int i=0;i<array.length();i++){
+                                JSONObject obj = array.getJSONObject(i);
+                                productos.add(gson.fromJson(obj.toString(), Producto.class));
+                                prod.add(obj.getString("Nombre"));
                             }
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -201,7 +235,7 @@ public class ActivityVendedor extends AppCompatActivity{
                 return cabeceras;
             }
         };
-        mQueue.add(jsonArrayRequest);
+        mQueue.add(jsonObjectRequest);
 
     }
 
@@ -233,11 +267,15 @@ public class ActivityVendedor extends AppCompatActivity{
         }
         return true;
     }
-    public static Producto searchProductByCode(String code){
-        for (Producto item:productos ){
-            if (item.getCodigoBarra().equals(code))
-                return item;
+    private Producto searchProductByCode(String c){
+        for (int i=0;i<productos.size();i++){
+            if (c.equals(productos.get(i).getCodigoBarra())){
+                Toast.makeText(this, "Si encontrado",Toast.LENGTH_SHORT).show();
+                return productos.get(i);
+            }
+
         }
+        Toast.makeText(this, "No encontrado",Toast.LENGTH_SHORT).show();
         return null;
     }
 

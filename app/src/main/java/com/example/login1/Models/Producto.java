@@ -1,5 +1,7 @@
 package com.example.login1.Models;
 
+import java.util.Objects;
+
 public class Producto {
     private String Id;
     private String CodigoBarra;
@@ -127,5 +129,17 @@ public class Producto {
 
     public void setImagen(String imagen) {
         Imagen = imagen;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Producto producto = (Producto) o;
+        return CodigoBarra.equals(producto.CodigoBarra);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(CodigoBarra, Nombre);
     }
 }

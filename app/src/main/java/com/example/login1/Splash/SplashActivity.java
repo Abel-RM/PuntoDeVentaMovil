@@ -16,6 +16,9 @@ import com.example.login1.Models.Usuario;
 import com.example.login1.Utils.Util;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,7 +41,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
     }
-    private void validar(String email,String password, String url){
+    private void validar(final String email, String password, String url){
 
         final JSONObject jsonBody = new JSONObject();
         try {
@@ -51,13 +54,10 @@ public class SplashActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
+                        Gson gson = new Gson();
                         try {
-
-                            login.UserToken=response.getString("Token");
-
-                            Gson gson = new Gson();
-                            userData = gson.fromJson(response.toString(), Usuario.class);
+                            login.UserToken=  response.getJSONObject("Data").getString("Token");
+                            userData = gson.fromJson(response.getJSONObject("Data").getJSONObject("Usuario").toString(), Usuario.class);
 
                         } catch (JSONException e) {
 

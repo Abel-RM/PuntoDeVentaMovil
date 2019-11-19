@@ -2,12 +2,11 @@ package com.example.login1.Activities;
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.login1.Models.Producto;
-import com.example.login1.R;
 import com.google.zxing.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
@@ -39,11 +38,11 @@ public class SimpleScannerActivity extends Activity implements ZXingScannerView.
     public void handleResult(Result rawResult) {
         //Log.v(TAG, rawResult.getText()); // Prints scan results
         //Log.v(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
-        Producto p = ActivityVendedor.searchProductByCode(rawResult.getBarcodeFormat().toString());
-        ActivityVendedor.selectedProd.add(p);
-        ActivityVendedor obj= new ActivityVendedor();
-        MyAdapter adapter1 = new MyAdapter(obj.getContext(), R.layout.custom_list_item,ActivityVendedor.selectedProd);
-        ActivityVendedor.list.setAdapter(adapter1);
+        Producto p= new Producto();
+        p.setPedidos(1);
+        p.setCodigoBarra(rawResult.getText());
+        ActivityVendedor.code.add(p);
+        Toast.makeText(this,"Producto Guardado" ,Toast.LENGTH_SHORT).show();
         mScannerView.resumeCameraPreview(this);
     }
 

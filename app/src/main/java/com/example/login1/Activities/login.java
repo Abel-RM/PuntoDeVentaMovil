@@ -131,14 +131,14 @@ public class login extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         removeSharedPreferences();
                         try {
-                            UserToken=response.getString("Token");
+                            UserToken=response.getJSONObject("Data").getString("Token");
 
                             if (switchRemember.isChecked()){
                                 saveOnPreferences(email,password);
                             }
 
                             Gson gson = new Gson();
-                            SplashActivity.userData = gson.fromJson(response.toString(), Usuario.class);
+                            SplashActivity.userData = gson.fromJson(response.getJSONObject("Data").getJSONObject("Usuario").toString(), Usuario.class);
 
                             if (SplashActivity.userData.getRol().equals("Vendedor")){
                                 pantallaVendedor();
