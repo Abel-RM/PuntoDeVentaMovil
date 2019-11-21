@@ -36,12 +36,7 @@ public class SimpleScannerActivity extends Activity implements ZXingScannerView.
 
     @Override
     public void handleResult(Result rawResult) {
-        //Log.v(TAG, rawResult.getText()); // Prints scan results
-        //Log.v(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
-        Producto p= new Producto();
-        p.setPedidos(1);
-        p.setCodigoBarra(rawResult.getText());
-        ActivityVendedor.code.add(p);
+        ActivityVendedor.codes.add(rawResult.getText());
         Toast.makeText(this,"Producto Guardado" ,Toast.LENGTH_SHORT).show();
         mScannerView.resumeCameraPreview(this);
     }

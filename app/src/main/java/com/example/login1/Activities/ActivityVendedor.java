@@ -41,7 +41,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 public class ActivityVendedor extends AppCompatActivity{
@@ -55,7 +58,7 @@ public class ActivityVendedor extends AppCompatActivity{
     static ArrayList<Producto> selectedProd=new ArrayList<>();
     static TextView txTotal;
     static MyAdapter adapterList;
-    static ArrayList<Producto> code= new ArrayList<>();
+    static ArrayList<String> codes= new ArrayList<>();
 
 
     @Override
@@ -66,9 +69,6 @@ public class ActivityVendedor extends AppCompatActivity{
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
         txTotal=findViewById(R.id.precio);
         list=  findViewById(R.id.listView);
-        String g =getIntent().getStringExtra("codigo");
-        //Producto p = ActivityVendedor.searchProductByCode(code);
-        //ActivityVendedor.selectedProd.add(p);
         editText = findViewById(R.id.actv);
         adapterList = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
 
@@ -89,8 +89,8 @@ public class ActivityVendedor extends AppCompatActivity{
                 Producto prod = new Producto();
                 String nombre =adapterView.getItemAtPosition(i).toString();
                 prod.setNombre(nombre);
-                //buscar(nombre)
-                if (true){
+
+                if (buscar(nombre)){
                     prod.setPedidos(1);
                     selectedProd.add(prod);
                     MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
@@ -140,22 +140,26 @@ public class ActivityVendedor extends AppCompatActivity{
     @Override
     public void onResume() {
         getProducts();
+        HashSet<String> hashSet = new HashSet<>(codes);
+        codes.clear();
+        codes.addAll(hashSet);
         try {
-            for(Producto item : code){
-                //Toast.makeText(this,item.getCodigoBarra(),Toast.LENGTH_SHORT).show();
-                //Toast.makeText(this,productos.get(0).getCodigoBarra(),Toast.LENGTH_SHORT).show();
-                //int x = productos.indexOf(item.getCodigoBarra());
-                Producto p= searchProductByCode(item.getCodigoBarra());
-                //Toast.makeText(this, p.getNombre(),Toast.LENGTH_SHORT).show();
-                item.setNombre(p.getNombre());
+            for(String item : codes){
+                Producto p= searchProductByCode(item);
+                p.setPedidos(1);
+                if (buscar(item)){
+                    selectedProd.add(p);
+                }
+
             }
-            selectedProd.addAll(code);
+            codes.clear();
             MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
             list.setAdapter(adapter1);
 
         }catch (Exception e){
             Toast.makeText(this, e.getMessage(),Toast.LENGTH_SHORT).show();
         }
+
 
         super.onResume();
     }
@@ -267,15 +271,16 @@ public class ActivityVendedor extends AppCompatActivity{
         }
         return true;
     }
-    private Producto searchProductByCode(String c){
-        for (int i=0;i<productos.size();i++){
-            if (c.equals(productos.get(i).getCodigoBarra())){
-                Toast.makeText(this, "Si encontrado",Toast.LENGTH_SHORT).show();
-                return productos.get(i);
-            }
 
+
+    private Producto searchProductByCode(String cod){
+        int i=cod.length()-1;
+        String c = cod.substring(0,i);
+        for (Producto item : productos){
+            if(item.getCodigoBarra().equals(c) ){
+                return item;
+            }
         }
-        Toast.makeText(this, "No encontrado",Toast.LENGTH_SHORT).show();
         return null;
     }
 
