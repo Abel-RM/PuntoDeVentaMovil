@@ -30,6 +30,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.login1.Models.Producto;
 import com.example.login1.R;
+import com.example.login1.Utils.Util;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -39,6 +40,7 @@ import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +52,6 @@ import java.util.Set;
 public class ActivityVendedor extends AppCompatActivity{
     private SharedPreferences prefs;
     private RequestQueue mQueue;
-    //com.baoyz.swipemenulistview.SwipeMenuListView
     static ListView list;
     static AutoCompleteTextView editText;
     static ArrayList<Producto> productos=new ArrayList<>();
@@ -58,7 +59,6 @@ public class ActivityVendedor extends AppCompatActivity{
     static ArrayList<Producto> selectedProd=new ArrayList<>();
     static TextView txTotal;
     static MyAdapter adapterList;
-    static ArrayList<String> codes= new ArrayList<>();
 
 
     @Override
@@ -70,6 +70,7 @@ public class ActivityVendedor extends AppCompatActivity{
         txTotal=findViewById(R.id.precio);
         list=  findViewById(R.id.listView);
         editText = findViewById(R.id.actv);
+        getProducts();
         adapterList = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
 
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -88,7 +89,7 @@ public class ActivityVendedor extends AppCompatActivity{
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Producto prod = new Producto();
                 String nombre =adapterView.getItemAtPosition(i).toString();
-                prod.setNombre(nombre);
+                prod=searchProductByName(nombre);
 
                 if (buscar(nombre)){
                     prod.setPedidos(1);
@@ -129,7 +130,12 @@ public class ActivityVendedor extends AppCompatActivity{
         camara.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent intent = new Intent(ActivityVendedor.this, SimpleScannerActivity.class);
+                Bundle args = new Bundle();
+                args.putSerializable("Productos",(Serializable)productos);
+                args.putSerializable("ProductosSeleccionados",(Serializable)selectedProd);
+                intent.putExtra("BUNDLE",args);
                 startActivity(intent);
             }
         });
@@ -139,29 +145,10 @@ public class ActivityVendedor extends AppCompatActivity{
 
     @Override
     public void onResume() {
-        getProducts();
-        HashSet<String> hashSet = new HashSet<>(codes);
-        codes.clear();
-        codes.addAll(hashSet);
-        try {
-            for(String item : codes){
-                Producto p= searchProductByCode(item);
-                p.setPedidos(1);
-                if (buscar(item)){
-                    selectedProd.add(p);
-                }
-
-            }
-            codes.clear();
-            MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
-            list.setAdapter(adapter1);
-
-        }catch (Exception e){
-            Toast.makeText(this, e.getMessage(),Toast.LENGTH_SHORT).show();
-        }
-
-
         super.onResume();
+        actualizarLista(Util.auxiliar);
+        Util.auxiliar.clear();
+
     }
 
     @Override
@@ -198,7 +185,6 @@ public class ActivityVendedor extends AppCompatActivity{
         prefs.edit().clear().apply();
 
     }
-
 
 
     private void getProducts() {
@@ -263,7 +249,7 @@ public class ActivityVendedor extends AppCompatActivity{
         }
         return total;
     }
-    public boolean buscar(String name){
+    private static boolean buscar(String name){
         for (Producto item: selectedProd){
             if (item.getNombre().equals(name)){
                 return false;
@@ -272,12 +258,32 @@ public class ActivityVendedor extends AppCompatActivity{
         return true;
     }
 
+    private void actualizarLista(ArrayList<Producto> pro){
+        try {
+            int count;
+            for (Producto p : pro){
+                count=0;
+                for (Producto item : selectedProd){
+                    if (item.getId().equals(p.getId())){
+                        count++;
+                    }
+                }
+                if (count==0){
+                    selectedProd.add(p);
+                }
+            }
 
-    private Producto searchProductByCode(String cod){
-        int i=cod.length()-1;
-        String c = cod.substring(0,i);
+            MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
+            list.setAdapter(adapter1);
+            txTotal.setText("Total: $ "+calcularTotal(productos,selectedProd));
+        }catch (Exception e){ }
+    }
+
+
+    public Producto searchProductByName(String name){
         for (Producto item : productos){
-            if(item.getCodigoBarra().equals(c) ){
+            if(item.getNombre().equals(name) ){
+
                 return item;
             }
         }
