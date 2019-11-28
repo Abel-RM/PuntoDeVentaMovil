@@ -83,7 +83,7 @@
             android:textAlignment="center"
             android:textSize="16dp"
             android:layout_weight="2"
-            android:text="Total:" />
+            android:text="Total: " />
 
         <Button
             android:id="@+id/botonComprar"
@@ -92,6 +92,7 @@
             android:layout_weight="1"
             android:text="Pagar"/>
     </LinearLayout>
+
 
 
 

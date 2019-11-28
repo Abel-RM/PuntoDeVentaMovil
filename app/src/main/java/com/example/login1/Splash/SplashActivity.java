@@ -34,7 +34,7 @@ public class SplashActivity extends AppCompatActivity {
         prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE);
         String email = Util.getUserMailPrefs(prefs);
         String password = Util.getUserPassPrefs(prefs);
-        String url = "http://pvmovil.westus.azurecontainer.io/api/Usuarios/Login/";
+        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Usuarios/Login";
         mQueue = VolleySingleton.getInstance(this).getRequestQueue();
         validar(email,password,url);
 

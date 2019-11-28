@@ -64,6 +64,8 @@ public  class MyAdapter extends BaseAdapter {
         TextView textView =v.findViewById(R.id.textView);
         textView.setText(currentName);
 
+        TextView textStoc =v.findViewById(R.id.stock);
+        textStoc.setText("Stock: "+String.valueOf(names.get(position).getStock()));
 
         l= v.findViewById(R.id.listItem);
         l.setId(Integer.parseInt("2"+String.valueOf(position)+"74"));
@@ -90,7 +92,14 @@ public  class MyAdapter extends BaseAdapter {
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
                 try {
                     EditText tx =view.findViewById(view.getId());
-                    selectedProd.get(view.getId()).setPedidos(Integer.parseInt(tx.getText().toString()));
+                    int stock = selectedProd.get(view.getId()).getStock();
+                    int pedidos = Integer.parseInt(tx.getText().toString());
+                    if (pedidos > stock+100){
+                        selectedProd.get(view.getId()).setPedidos(stock);
+                        tx.setText(String.valueOf(stock));
+                    }else{
+                        selectedProd.get(view.getId()).setPedidos(Integer.parseInt(tx.getText().toString()));
+                    }
                     ActivityVendedor.txTotal.setText("Total: $ "+ActivityVendedor.calcularTotal(ActivityVendedor.productos, selectedProd));
 
                 }catch (Exception e){ }

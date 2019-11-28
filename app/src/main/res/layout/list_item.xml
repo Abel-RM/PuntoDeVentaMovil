@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:text="Cantidad: "
                 android:layout_marginRight="5dp"
+                android:layout_marginBottom="9dp"
                 android:layout_gravity="center_vertical"/>
 
             <EditText
@@ -56,10 +57,14 @@
                 android:textSize="14sp"
                 android:hint="1"
                 android:inputType="number"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="8dp"
                 android:textAlignment="center"
+                android:layout_marginRight="8dp"
                 android:layout_marginBottom="25dp"/>
+            <TextView
+                android:id="@+id/stock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stock: "/>
 
 
         </LinearLayout>

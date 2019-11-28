@@ -117,7 +117,7 @@ public class login extends AppCompatActivity {
 
     }
     public void getToken(final String email, final String password,Context context){
-        String url = "http://pvmovil.westus.azurecontainer.io/api/Usuarios/Login/";
+        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Usuarios/Login/";
         final JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("Email",email);

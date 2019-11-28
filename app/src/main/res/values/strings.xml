@@ -7,5 +7,9 @@
         <item>Andorra</item>
         <item>Angola</item>
     </string-array>
+    <string-array name="tipoDeVentaArray">
+        <item>Venta Sucursal</item>
+        <item>Pedido</item>
+    </string-array>
 </resources>
 

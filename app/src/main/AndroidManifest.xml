@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App.MyApp"
@@ -15,9 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.ActivityHistorial"></activity>
+        <activity android:name=".Activities.ActivityVentaPedido"></activity>
+        <activity android:name=".Activities.ActivityHistorial" />
         <activity android:name=".Activities.ActivityVentas" />
         <activity android:name=".Activities.ActivitySurtidor" />
+        <activity android:name=".Activities.ActivityPago" />
         <activity
             android:name=".Splash.SplashActivity"
             android:theme="@style/SplashScreen">
@@ -29,7 +31,7 @@
         </activity>
         <activity android:name=".Activities.login" />
         <activity android:name=".Activities.ActivityVendedor" />
-        <activity android:name=".Activities.SimpleScannerActivity"></activity>
+        <activity android:name=".Activities.SimpleScannerActivity" />
     </application>
 
 </manifest>

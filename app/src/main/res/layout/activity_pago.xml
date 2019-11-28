@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="38dp"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="38sp"
+                        android:text="$"
+                        />
+                    <TextView
+                        android:id="@+id/labelTotal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="38sp"
+                        />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="50dp"
+                    android:textSize="15sp"
+                    android:text="Total a pagar"
+                    />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="80dp">
+                <EditText
+                    android:id="@+id/editTextEfectivo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:inputType="numberDecimal"/>
+                <TextView
+                    android:id="@+id/labelEfectivo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginBottom="30dp"
+                    android:textColor="#009688"
+                    android:text="Efectivo recibido" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="35dp"
+                        android:textSize="18sp"
+                        android:text="Cambio: " />
+                    <TextView
+                        android:id="@+id/labelCambio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="30dp"
+                      />
+
+                </LinearLayout>
+                <EditText
+                    android:id="@+id/correoTicket"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="8"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:hint="Ingresa el correo electronico"
+
+                    android:inputType="textEmailAddress"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:textSize="15sp"
+                    android:text="Enviar ticket"
+                    />
+                <ToggleButton
+                    android:id="@+id/toggleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textOff="Sucursal"
+                    android:textOn="Pedido"
+                    android:layout_marginRight="30dp"
+                    android:layout_gravity="right"
+                    />
+
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnGuardar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:text="Finalizar" />
+
+                <Button
+                    android:id="@+id/btnCancelar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+
+                    android:text="Cancelar" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+</LinearLayout>

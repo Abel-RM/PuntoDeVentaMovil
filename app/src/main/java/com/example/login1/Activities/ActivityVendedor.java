@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -38,9 +39,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +62,7 @@ public class ActivityVendedor extends AppCompatActivity{
     static ArrayList<Producto> selectedProd=new ArrayList<>();
     static TextView txTotal;
     static MyAdapter adapterList;
-
+    private Button btnPagar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,18 +90,23 @@ public class ActivityVendedor extends AppCompatActivity{
         editText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Producto prod = new Producto();
+                Producto prod ;
                 String nombre =adapterView.getItemAtPosition(i).toString();
                 prod=searchProductByName(nombre);
-
-                if (buscar(nombre)){
-                    prod.setPedidos(1);
-                    selectedProd.add(prod);
-                    MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
-                    list.setAdapter(adapter1);
+                if (prod.getStock()!=1){
+                    if (buscar(nombre)){
+                        prod.setPedidos(1);
+                        selectedProd.add(prod);
+                        MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
+                        list.setAdapter(adapter1);
+                        editText.setText("");
+                        txTotal.setText("Total: $"+String.valueOf(calcularTotal(productos,selectedProd)));
+                    }else editText.setText("");
+                }else{
+                    Toast.makeText(ActivityVendedor.this,"Stock insuficiente",Toast.LENGTH_LONG).show();
                     editText.setText("");
-                    txTotal.setText("Total: $ "+calcularTotal(productos,selectedProd));
-                }else editText.setText("");
+                }
+
 
 
             }
@@ -115,7 +123,7 @@ public class ActivityVendedor extends AppCompatActivity{
                                 selectedProd.remove(position);
                                 MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
                                 list.setAdapter(adapter1);
-                                txTotal.setText("Total: $ "+calcularTotal(productos,selectedProd));
+                                txTotal.setText("Total: $"+String.valueOf(calcularTotal(productos,selectedProd)));
                             }
                         })
                         .setNegativeButton(android.R.string.no, null)
@@ -124,7 +132,6 @@ public class ActivityVendedor extends AppCompatActivity{
                 return true;
             }
         });
-
 
         ImageView camara= findViewById(R.id.camara);
         camara.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +146,15 @@ public class ActivityVendedor extends AppCompatActivity{
                 startActivity(intent);
             }
         });
-
+        btnPagar = findViewById(R.id.botonComprar);
+        btnPagar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ActivityVendedor.this, ActivityPago.class);
+                intent.putExtra("Total",String.valueOf(calcularTotal(productos,selectedProd)));
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -188,12 +203,10 @@ public class ActivityVendedor extends AppCompatActivity{
 
 
     private void getProducts() {
-        String url = "http://pvmovil.westus.azurecontainer.io/api/Productos";
-
+        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Productos/";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url,null, new Response.Listener<JSONObject>() {
-
                     @Override
                     public void onResponse(JSONObject response) {
 
@@ -208,21 +221,19 @@ public class ActivityVendedor extends AppCompatActivity{
 
 
                         } catch (Exception e) {
-                            e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {
-
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ActivityVendedor.this,error.toString(),Toast.LENGTH_SHORT).show();
                     }
-                })
-        {
+                }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> cabeceras = new HashMap<String, String>();
-                cabeceras.put("Token", login.UserToken);
-                return cabeceras;
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + login.UserToken);
+                return headers;
             }
         };
         mQueue.add(jsonObjectRequest);
@@ -247,7 +258,9 @@ public class ActivityVendedor extends AppCompatActivity{
                 total=total+lista.get(index).getPrecioMenudeo()*cant;
 
         }
-        return total;
+        DecimalFormat form = new DecimalFormat("####.##");
+
+        return Double.parseDouble(form.format(total));
     }
     private static boolean buscar(String name){
         for (Producto item: selectedProd){
@@ -275,7 +288,7 @@ public class ActivityVendedor extends AppCompatActivity{
 
             MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
             list.setAdapter(adapter1);
-            txTotal.setText("Total: $ "+calcularTotal(productos,selectedProd));
+            txTotal.setText("Total: $"+String.valueOf(calcularTotal(productos,selectedProd)));
         }catch (Exception e){ }
     }
 
@@ -283,7 +296,6 @@ public class ActivityVendedor extends AppCompatActivity{
     public Producto searchProductByName(String name){
         for (Producto item : productos){
             if(item.getNombre().equals(name) ){
-
                 return item;
             }
         }

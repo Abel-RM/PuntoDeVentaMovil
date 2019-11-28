@@ -99,9 +99,14 @@ public class OnSwipeListener implements View.OnTouchListener
         //Toast.makeText(context,String.valueOf(position),Toast.LENGTH_SHORT).show();
          EditText text = v.findViewById(position);
          int cant=Integer.parseInt(text.getText().toString())+1;
-         text.setText(String.valueOf(cant));
-        selectedProd.get(position).setPedidos(Integer.parseInt(text.getText().toString()));
-        ActivityVendedor.txTotal.setText("Total: $ "+ActivityVendedor.calcularTotal(ActivityVendedor.productos, selectedProd));
+         int stock = selectedProd.get(position).getStock();
+         //cant<=stock
+         if (cant>stock){
+             text.setText(String.valueOf(cant));
+             selectedProd.get(position).setPedidos(Integer.parseInt(text.getText().toString()));
+             ActivityVendedor.txTotal.setText("Total: $"+String.valueOf(ActivityVendedor.calcularTotal(ActivityVendedor.productos, selectedProd)));
+         }
+
         return false;
     }
 
@@ -114,7 +119,7 @@ public class OnSwipeListener implements View.OnTouchListener
             cant=Integer.parseInt(text.getText().toString())-1;
             text.setText(String.valueOf(cant));
             selectedProd.get(position).setPedidos(Integer.parseInt(text.getText().toString()));
-            ActivityVendedor.txTotal.setText("Total: $ "+ActivityVendedor.calcularTotal(ActivityVendedor.productos, selectedProd));
+            ActivityVendedor.txTotal.setText("Total: $"+String.valueOf(ActivityVendedor.calcularTotal(ActivityVendedor.productos, selectedProd)));
         }
 
         return false;
