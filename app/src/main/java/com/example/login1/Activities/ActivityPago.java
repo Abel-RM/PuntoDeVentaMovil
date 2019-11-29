@@ -59,6 +59,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,13 +97,15 @@ public class ActivityPago extends AppCompatActivity  {
         efectivo.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                DecimalFormat form = new DecimalFormat("####.##");
+
                 try {
                     double t;
                     t = Double.parseDouble(String.valueOf(total.getText()));
                     double e;
                     e = Double.parseDouble(String.valueOf(efectivo.getText()));
                     if (e>=t){
-                        cambio.setText(String.valueOf(e-t));
+                        cambio.setText(String.valueOf(Double.parseDouble(form.format(e-t))));
                     }
                 }catch (Exception e){}
 
@@ -117,6 +120,7 @@ public class ActivityPago extends AppCompatActivity  {
                 if (isChecked){
                     btnComprar.setText("Siguiente");
                     correoTicket.setEnabled(false);
+                    correoTicket.setText("");
                 }else {
                     btnComprar.setText("Finalizar");
                     correoTicket.setEnabled(true);

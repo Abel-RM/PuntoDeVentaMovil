@@ -3,9 +3,9 @@ package com.example.login1.Models;
 public class VentaDetalle
 {
     private String ProductoId;
-    private Integer Cantidad;
-    private Double Precio;
-    private Double Importe;
+    private String Cantidad;
+    private String Precio;
+    private String  Importe;
     public VentaDetalle(){
 
     }
@@ -17,27 +17,27 @@ public class VentaDetalle
         ProductoId = productoId;
     }
 
-    public Integer getCantidad() {
+    public String  getCantidad() {
         return Cantidad;
     }
 
-    public void setCantidad(Integer cantidad) {
+    public void setCantidad(String cantidad) {
         Cantidad = cantidad;
     }
 
-    public Double getPrecio() {
+    public String getPrecio() {
         return Precio;
     }
 
-    public void setPrecio(Double precio) {
+    public void setPrecio(String precio) {
         Precio = precio;
     }
 
-    public Double getImporte() {
+    public String getImporte() {
         return Importe;
     }
 
-    public void setImporte(Double importe) {
+    public void setImporte(String importe) {
         Importe = importe;
     }
 

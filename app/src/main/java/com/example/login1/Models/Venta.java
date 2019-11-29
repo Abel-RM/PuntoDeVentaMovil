@@ -1,6 +1,7 @@
 package com.example.login1.Models;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,32 +11,25 @@ public class Venta
     private String SurtidorId;
     private String VendedorId;
     private String ClienteId;
-    private Date FechaVenta;
-    private Date FechaProgramadaEntrega;
-    private Date FechaEntrega;
-    private List<VentaDetalle> VentaDetalle;
-    private double Total;
-    private double PagoEfectivo;
-    private double Cambio;
+    private String FechaVenta;
+    private String FechaProgramadaEntrega;
+    private String FechaEntrega;
+    private ArrayList<VentaDetalle> VentaDetalle;
+    private String Total;
+    private String PagoEfectivo;
+    private String Cambio;
     private String FirmaRuta;
-    private File Firma;
+    private String Firma;
     private String TipoVenta; //Pedido y VentaSucursal
     private String EstadoVenta;//Entregado y No Entregado
 
-    public Venta(String vendedorId, String clienteId, List<com.example.login1.Models.VentaDetalle> ventaDetalle, double total, double pagoEfectivo, double cambio, String tipoVenta) {
-        VendedorId = vendedorId;
-        ClienteId = clienteId;
-        VentaDetalle = ventaDetalle;
-        Total = total;
-        PagoEfectivo = pagoEfectivo;
-        Cambio = cambio;
-        TipoVenta = tipoVenta;
-    }
+
 
     public Venta()
     {
 
     }
+
     public String getId() {
         return Id;
     }
@@ -68,59 +62,59 @@ public class Venta
         ClienteId = clienteId;
     }
 
-    public Date getFechaVenta() {
+    public String getFechaVenta() {
         return FechaVenta;
     }
 
-    public void setFechaVenta(Date fechaVenta) {
+    public void setFechaVenta(String fechaVenta) {
         FechaVenta = fechaVenta;
     }
 
-    public Date getFechaProgramadaEntrega() {
+    public String getFechaProgramadaEntrega() {
         return FechaProgramadaEntrega;
     }
 
-    public void setFechaProgramadaEntrega(Date fechaProgramadaEntrega) {
+    public void setFechaProgramadaEntrega(String fechaProgramadaEntrega) {
         FechaProgramadaEntrega = fechaProgramadaEntrega;
     }
 
-    public Date getFechaEntrega() {
+    public String getFechaEntrega() {
         return FechaEntrega;
     }
 
-    public void setFechaEntrega(Date fechaEntrega) {
+    public void setFechaEntrega(String fechaEntrega) {
         FechaEntrega = fechaEntrega;
     }
 
-    public List<com.example.login1.Models.VentaDetalle> getVentaDetalle() {
+    public ArrayList<VentaDetalle> getVentaDetalle() {
         return VentaDetalle;
     }
 
-    public void setVentaDetalle(List<com.example.login1.Models.VentaDetalle> ventaDetalle) {
+    public void setVentaDetalle(ArrayList<VentaDetalle> ventaDetalle) {
         VentaDetalle = ventaDetalle;
     }
 
-    public double getTotal() {
+    public String getTotal() {
         return Total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(String total) {
         Total = total;
     }
 
-    public double getPagoEfectivo() {
+    public String getPagoEfectivo() {
         return PagoEfectivo;
     }
 
-    public void setPagoEfectivo(double pagoEfectivo) {
+    public void setPagoEfectivo(String pagoEfectivo) {
         PagoEfectivo = pagoEfectivo;
     }
 
-    public double getCambio() {
+    public String getCambio() {
         return Cambio;
     }
 
-    public void setCambio(double cambio) {
+    public void setCambio(String cambio) {
         Cambio = cambio;
     }
 
@@ -132,11 +126,11 @@ public class Venta
         FirmaRuta = firmaRuta;
     }
 
-    public File getFirma() {
+    public String getFirma() {
         return Firma;
     }
 
-    public void setFirma(File firma) {
+    public void setFirma(String firma) {
         Firma = firma;
     }
 

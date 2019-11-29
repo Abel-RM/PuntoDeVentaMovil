@@ -93,7 +93,7 @@ public class ActivityVendedor extends AppCompatActivity{
                 Producto prod ;
                 String nombre =adapterView.getItemAtPosition(i).toString();
                 prod=searchProductByName(nombre);
-                if (prod.getStock()!=1){
+                if (prod.getStock()!=0){
                     if (buscar(nombre)){
                         prod.setPedidos(1);
                         selectedProd.add(prod);

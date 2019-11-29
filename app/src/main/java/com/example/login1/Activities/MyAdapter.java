@@ -94,7 +94,7 @@ public  class MyAdapter extends BaseAdapter {
                     EditText tx =view.findViewById(view.getId());
                     int stock = selectedProd.get(view.getId()).getStock();
                     int pedidos = Integer.parseInt(tx.getText().toString());
-                    if (pedidos > stock+100){
+                    if (pedidos > stock){
                         selectedProd.get(view.getId()).setPedidos(stock);
                         tx.setText(String.valueOf(stock));
                     }else{

@@ -100,8 +100,7 @@ public class OnSwipeListener implements View.OnTouchListener
          EditText text = v.findViewById(position);
          int cant=Integer.parseInt(text.getText().toString())+1;
          int stock = selectedProd.get(position).getStock();
-         //cant<=stock
-         if (cant>stock){
+         if (cant<=stock){
              text.setText(String.valueOf(cant));
              selectedProd.get(position).setPedidos(Integer.parseInt(text.getText().toString()));
              ActivityVendedor.txTotal.setText("Total: $"+String.valueOf(ActivityVendedor.calcularTotal(ActivityVendedor.productos, selectedProd)));
