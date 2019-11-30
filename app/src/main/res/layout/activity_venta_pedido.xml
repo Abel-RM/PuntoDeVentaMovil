@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.ActivityVentaPedido"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <Button
         android:id="@+id/btnNuevoCliente"
@@ -28,7 +30,12 @@
         android:layout_marginLeft="5dp"
         android:hint="Buscar correo"
         android:layout_marginBottom="35dp"
-        android:popupBackground="@color/colorBuscador" />
+        android:popupBackground="@color/colorBuscador"
+        >
+    </AutoCompleteTextView>
+
+
+
 
 
     <TextView
@@ -49,10 +56,11 @@
     <TextView
         android:id="@+id/labelCorreo"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:textSize="16sp"
         android:scrollbars="vertical"
-        android:layout_marginLeft="30dp"/>
+        android:layout_marginBottom="200dp"
+        android:layout_marginLeft="35dp"/>
 
     <Button
         android:id="@+id/btnGuardarVentaPedido"

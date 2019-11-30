@@ -30,6 +30,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.login1.Models.Producto;
+import com.example.login1.Models.Venta;
 import com.example.login1.R;
 import com.example.login1.Utils.Util;
 import com.example.login1.Utils.VolleySingleton;
@@ -240,6 +241,7 @@ public class ActivityVendedor extends AppCompatActivity{
 
     }
 
+
     public static Double calcularTotal(ArrayList<Producto> lista,ArrayList<Producto> select){
         Double total=0.0;
         int index=0;
@@ -252,7 +254,7 @@ public class ActivityVendedor extends AppCompatActivity{
                 }
             }
             int cant=item.getPedidos();
-            if (cant>5){
+            if (cant>Util.cantidadMayoreo){
                 total=total+lista.get(index).getPrecioMayoreo()*cant;
             }else
                 total=total+lista.get(index).getPrecioMenudeo()*cant;

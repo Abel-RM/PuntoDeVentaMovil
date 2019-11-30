@@ -18,20 +18,7 @@ public class Cliente {
     {
 
     }
-    public Cliente(String Id,String Nombre,String ApellidoP,String ApellidoM,String Telefono,String Email,String Localidad,String Colonia,String Calle,String NumeroIntoExt,String Estado)
-    {
-        this.Id = Id;
-        this.Nombre = Nombre;
-        this.ApellidoP = ApellidoP;
-        this.ApellidoM = ApellidoM;
-        this.Telefono = Telefono;
-        this.Email = Email;
-        this.Localidad = Localidad;
-        this.Colonia = Colonia;
-        this.Calle = Calle;
-        this.NumeroIntoExt = NumeroIntoExt;
-        this.Estado = Estado;
-    }
+
     public String getId() {
         return Id;
     }

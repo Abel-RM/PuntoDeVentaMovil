@@ -73,6 +73,7 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="wrap_content"
@@ -88,23 +89,8 @@
                       />
 
                 </LinearLayout>
-                <EditText
-                    android:id="@+id/correoTicket"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="8"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="30dp"
-                    android:hint="Ingresa el correo electronico"
 
-                    android:inputType="textEmailAddress"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="35dp"
-                    android:textSize="15sp"
-                    android:text="Enviar ticket"
-                    />
+
                 <ToggleButton
                     android:id="@+id/toggleButton"
                     android:layout_width="wrap_content"

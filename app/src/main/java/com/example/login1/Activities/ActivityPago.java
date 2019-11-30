@@ -46,10 +46,12 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.login1.Models.Cliente;
+import com.example.login1.Models.Producto;
 import com.example.login1.Models.Usuario;
 import com.example.login1.Models.Venta;
 import com.example.login1.Models.VentaDetalle;
 import com.example.login1.R;
+import com.example.login1.Splash.SplashActivity;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -68,11 +70,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 public class ActivityPago extends AppCompatActivity  {
     private SharedPreferences prefs;
-
-
+    private RequestQueue mQueue;
     private TextView cambio;
     private EditText efectivo;
-    private EditText correoTicket;
     private ToggleButton tipoVenta;
     private Button btnComprar;
     private String preciototal;
@@ -83,11 +83,10 @@ public class ActivityPago extends AppCompatActivity  {
         setContentView(R.layout.activity_pago);
 
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
-
+        mQueue = VolleySingleton.getInstance(this).getRequestQueue();
         cambio = findViewById(R.id.labelCambio);
         efectivo = findViewById(R.id.editTextEfectivo);
         tipoVenta = findViewById(R.id.toggleButton);
-        correoTicket = findViewById(R.id.correoTicket);
         btnComprar = findViewById(R.id.btnGuardar);
 
         preciototal = getIntent().getStringExtra("Total");
@@ -119,11 +118,8 @@ public class ActivityPago extends AppCompatActivity  {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     btnComprar.setText("Siguiente");
-                    correoTicket.setEnabled(false);
-                    correoTicket.setText("");
                 }else {
                     btnComprar.setText("Finalizar");
-                    correoTicket.setEnabled(true);
                 }
             }
         });
@@ -136,12 +132,76 @@ public class ActivityPago extends AppCompatActivity  {
                     intent.putExtra("Cambio",cambio.getText().toString());
                     intent.putExtra("Efectivo",efectivo.getText().toString());
                     startActivity(intent);
+                }else{
+                    Toast.makeText(ActivityPago.this,"Espere...",Toast.LENGTH_SHORT).show();
+                    Venta venta = new Venta();
+                    venta.setVendedorId(SplashActivity.userData.getId());
+                    venta.setVentaDetalle(crearVentaDetalle());
+                    venta.setPagoEfectivo(efectivo.getText().toString());
+                    venta.setTipoVenta("Venta sucursal");
+                    guardarVenta(venta);
                 }
 
             }
         });
 
 
+    }
+    private void guardarVenta(Venta venta){
+        String det = new Gson().toJson(venta.getVentaDetalle() );
+        det=det.trim();
+        JSONObject obj = new JSONObject();
+        try {
+            JSONArray jd = new JSONArray(det);
+            obj.put("VendedorId",venta.getVendedorId());
+            obj.put("ClienteId",venta.getClienteId());
+            obj.put("VentaDetalle",jd);
+            obj.put("PagoEfectivo",venta.getPagoEfectivo());
+            obj.put("TipoVenta",venta.getTipoVenta());
+
+        } catch (JSONException e) {
+            Toast.makeText(ActivityPago.this,e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+
+        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas/";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, url,obj, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Toast.makeText(ActivityPago.this,"Venta guardada",Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(ActivityPago.this,"Algo salio mal",Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ActivityPago.this,error.toString(),Toast.LENGTH_LONG).show();
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + login.UserToken);
+                return headers;
+            }
+        };
+        mQueue.add(jsonObjectRequest);
+    }
+    private ArrayList<VentaDetalle> crearVentaDetalle(){
+        ArrayList<VentaDetalle> ventaDetalles = new ArrayList<>();
+
+        VentaDetalle detalle;
+        for (Producto item : ActivityVendedor.selectedProd){
+            detalle= new VentaDetalle();
+            detalle.setProductoId(item.getId());
+            detalle.setCantidad(String.valueOf(item.getPedidos()));
+            ventaDetalles.add(detalle);
+        }
+        return ventaDetalles;
     }
 
     @Override

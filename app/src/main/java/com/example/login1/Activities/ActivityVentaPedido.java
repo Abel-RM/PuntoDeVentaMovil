@@ -1,26 +1,18 @@
 package com.example.login1.Activities;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.login1.Models.Cliente;
 import com.example.login1.Models.Producto;
@@ -28,18 +20,13 @@ import com.example.login1.Models.Venta;
 import com.example.login1.Models.VentaDetalle;
 import com.example.login1.R;
 import com.example.login1.Splash.SplashActivity;
-import com.example.login1.Utils.Util;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ActivityVentaPedido extends AppCompatActivity implements DialogCliente.DialogListener{
@@ -52,6 +39,7 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
     private  TextView textTelefono;
     private  TextView textCorreo;
     private Button btnPedido;
+    private static int count=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +51,7 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
         textCorreo = findViewById(R.id.labelCorreo);
         autocompleteCliente = findViewById(R.id.autocomplete_Cliente);
         btnPedido = findViewById(R.id.btnGuardarVentaPedido);
-        getClientes();
+
         final ArrayAdapter<Cliente> adapter = new ArrayAdapter<>(
                 ActivityVentaPedido.this, R.layout.custom_list_item,R.id.text_view_list_item, clientes);
         autocompleteCliente.setAdapter(adapter);
@@ -79,10 +67,16 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
                 autocompleteCliente.setText("");
             }
         });
+        autocompleteCliente.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                getClientes();
+            }
+        });
         btnPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Toast.makeText(ActivityVentaPedido.this,"Espere...",Toast.LENGTH_SHORT).show();
                 Venta venta = new Venta();
                 venta.setVendedorId(SplashActivity.userData.getId());
                 venta.setClienteId(clienteSeleccionado.getId());
@@ -90,7 +84,6 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
                 venta.setPagoEfectivo(getIntent().getStringExtra("Efectivo"));
                 venta.setTipoVenta("Pedido");
                 guardarVenta(venta);
-
             }
         });
         nuevoCliente = findViewById(R.id.btnNuevoCliente);
@@ -145,6 +138,7 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
 
     private void crearCliente(final Cliente cliente)
     {
+
         JSONObject json = new JSONObject();
         try {
             json.put("Nombre",cliente.getNombre());
@@ -181,30 +175,32 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
         mQueue.add(jsonObjectRequest);
     }
     private void guardarVenta(Venta venta){
-        //Gson gson = new Gson();
         String det = new Gson().toJson(venta.getVentaDetalle() );
         det=det.trim();
         JSONObject obj = new JSONObject();
-
         try {
             JSONArray jd = new JSONArray(det);
-
+            obj.put("VendedorId",venta.getVendedorId());
+            obj.put("ClienteId",venta.getClienteId());
+            obj.put("VentaDetalle",jd);
+            obj.put("PagoEfectivo",venta.getPagoEfectivo());
             obj.put("TipoVenta",venta.getTipoVenta());
 
         } catch (JSONException e) {
             Toast.makeText(ActivityVentaPedido.this,e.getMessage(),Toast.LENGTH_LONG).show();
         }
 
-        textCorreo.setMovementMethod(new ScrollingMovementMethod());
-        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas";
+        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas/";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, url,obj, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            textCorreo.setText(response.toString());
+                            count++;
+                            Toast.makeText(ActivityVentaPedido.this,String.valueOf(count),Toast.LENGTH_LONG).show();
+                            Toast.makeText(ActivityVentaPedido.this,"Venta guardada",Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Toast.makeText(ActivityVentaPedido.this,"Algo salio mal",Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -224,17 +220,20 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
         };
         mQueue.add(jsonObjectRequest);
     }
+
     private ArrayList<VentaDetalle> crearVentaDetalle(){
         ArrayList<VentaDetalle> ventaDetalles = new ArrayList<>();
 
-        VentaDetalle detalle= new VentaDetalle();
+        VentaDetalle detalle;
         for (Producto item : ActivityVendedor.selectedProd){
+            detalle= new VentaDetalle();
             detalle.setProductoId(item.getId());
             detalle.setCantidad(String.valueOf(item.getPedidos()));
             ventaDetalles.add(detalle);
         }
         return ventaDetalles;
     }
+
 
     public void openDialog() {
         DialogCliente dialogCliente = new DialogCliente();

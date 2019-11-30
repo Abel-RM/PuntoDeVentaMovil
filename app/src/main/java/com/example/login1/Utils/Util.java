@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Util extends AppCompatActivity {
     public static ArrayList<Producto> auxiliar= new ArrayList<>();
-    public static int cantidadMayoreo = 5;
+    public static int cantidadMayoreo = 12;
 
     public static String getUserMailPrefs(SharedPreferences prefs){
         return prefs.getString("email","");
