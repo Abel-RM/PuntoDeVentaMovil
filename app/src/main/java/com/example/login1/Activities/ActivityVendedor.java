@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,32 +25,21 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.example.login1.Models.Producto;
-import com.example.login1.Models.Venta;
 import com.example.login1.R;
 import com.example.login1.Utils.Util;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
-
 
 public class ActivityVendedor extends AppCompatActivity{
     private SharedPreferences prefs;
@@ -62,7 +50,7 @@ public class ActivityVendedor extends AppCompatActivity{
     static ArrayList<String> prod=new ArrayList<>();
     static ArrayList<Producto> selectedProd=new ArrayList<>();
     static TextView txTotal;
-    static MyAdapter adapterList;
+    static AdaptadorListaProductos adapterList;
     private Button btnPagar;
 
     @Override
@@ -75,7 +63,7 @@ public class ActivityVendedor extends AppCompatActivity{
         list=  findViewById(R.id.listView);
         editText = findViewById(R.id.actv);
         getProducts();
-        adapterList = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
+        adapterList = new AdaptadorListaProductos(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
 
         editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -98,7 +86,7 @@ public class ActivityVendedor extends AppCompatActivity{
                     if (buscar(nombre)){
                         prod.setPedidos(1);
                         selectedProd.add(prod);
-                        MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
+                        AdaptadorListaProductos adapter1 = new AdaptadorListaProductos(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
                         list.setAdapter(adapter1);
                         editText.setText("");
                         txTotal.setText("Total: $"+String.valueOf(calcularTotal(productos,selectedProd)));
@@ -122,7 +110,7 @@ public class ActivityVendedor extends AppCompatActivity{
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 selectedProd.remove(position);
-                                MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
+                                AdaptadorListaProductos adapter1 = new AdaptadorListaProductos(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
                                 list.setAdapter(adapter1);
                                 txTotal.setText("Total: $"+String.valueOf(calcularTotal(productos,selectedProd)));
                             }
@@ -288,7 +276,7 @@ public class ActivityVendedor extends AppCompatActivity{
                 }
             }
 
-            MyAdapter adapter1 = new MyAdapter(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
+            AdaptadorListaProductos adapter1 = new AdaptadorListaProductos(ActivityVendedor.this,R.layout.custom_list_item,selectedProd);
             list.setAdapter(adapter1);
             txTotal.setText("Total: $"+String.valueOf(calcularTotal(productos,selectedProd)));
         }catch (Exception e){ }

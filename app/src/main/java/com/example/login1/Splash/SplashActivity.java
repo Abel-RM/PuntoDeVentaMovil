@@ -9,16 +9,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.login1.Activities.ActivitySurtidor;
+import com.example.login1.Activities.ActivityHistorial;
 import com.example.login1.Activities.ActivityVendedor;
 import com.example.login1.Activities.login;
+import com.example.login1.Activities.ActivitySurtidor;
 import com.example.login1.Models.Usuario;
 import com.example.login1.Utils.Util;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

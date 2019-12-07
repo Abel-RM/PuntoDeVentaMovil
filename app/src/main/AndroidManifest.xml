@@ -14,18 +14,21 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Activities.ActivityVentaPedido"></activity>
+        android:theme="@style/AppTheme"
+        >
+        <activity
+            android:name=".Activities.ActivitySurtidor"
+            android:label="@string/app_name"
+            ></activity>
+        <activity android:name=".Activities.ActivityVentaPedido" />
         <activity android:name=".Activities.ActivityHistorial" />
         <activity android:name=".Activities.ActivityVentas" />
-        <activity android:name=".Activities.ActivitySurtidor" />
         <activity android:name=".Activities.ActivityPago" />
         <activity
             android:name=".Splash.SplashActivity"
             android:theme="@style/SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

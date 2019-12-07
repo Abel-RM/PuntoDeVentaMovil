@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import static com.example.login1.Activities.ActivityVendedor.selectedProd;
 
-public  class MyAdapter extends BaseAdapter {
+public  class AdaptadorListaProductos extends BaseAdapter {
 
     private Context context;
     private int layout;
@@ -28,7 +28,7 @@ public  class MyAdapter extends BaseAdapter {
 
 
 
-    public MyAdapter(Context context, int layout, List<Producto> names) {
+    public AdaptadorListaProductos(Context context, int layout, List<Producto> names) {
         this.context = context;
         this.layout = layout;
         this.names = names;

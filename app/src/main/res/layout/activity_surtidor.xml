@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context="com.example.login1.Activities.ActivitySurtidor">
+    tools:context=".Activities.ActivitySurtidor">
 
-    <AutoCompleteTextView
-        android:id="@+id/actv"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:completionHint="Select a country"
-        android:completionThreshold="1"
-        android:dropDownAnchor="@id/text_view_countries"
-        android:hint="Select a country"
-        android:popupBackground="@color/colorAccent" />
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-    <TextView
-        android:id="@+id/text_view_countries"
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:text="Countries"
-        android:textSize="20sp" />
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-</LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

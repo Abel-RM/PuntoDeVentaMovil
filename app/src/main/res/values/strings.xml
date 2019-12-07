@@ -11,5 +11,12 @@
         <item>Venta Sucursal</item>
         <item>Pedido</item>
     </string-array>
+    <string name="title_activity_surtidor">ActivitySurtidor</string>
+    <string name="tab_text_1">Todas</string>
+    <string name="tab_text_2">Asignadas</string>
+    <string name="title_activity_tab">TabActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
 
