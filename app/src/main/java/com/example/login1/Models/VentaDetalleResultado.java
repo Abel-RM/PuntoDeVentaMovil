@@ -3,7 +3,7 @@ package com.example.login1.Models;
 public class VentaDetalleResultado {
     public String Nombre ;
     public String Imagen ;
-    public int Cantidad;
+    public String Cantidad;
     public String Precio;
     public String Importe;
 
@@ -27,11 +27,11 @@ public class VentaDetalleResultado {
         Imagen = imagen;
     }
 
-    public int getCantidad() {
+    public String getCantidad() {
         return Cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(String cantidad) {
         Cantidad = cantidad;
     }
 

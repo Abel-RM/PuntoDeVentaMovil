@@ -8,12 +8,13 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
 import com.example.login1.Models.Cliente;
 import com.example.login1.Models.Producto;
 import com.example.login1.Models.Venta;
@@ -173,6 +174,7 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
             }
         };
         mQueue.add(jsonObjectRequest);
+
     }
     private void guardarVenta(Venta venta){
         String det = new Gson().toJson(venta.getVentaDetalle() );
@@ -218,6 +220,10 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
                 return headers;
             }
         };
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonObjectRequest);
     }
 

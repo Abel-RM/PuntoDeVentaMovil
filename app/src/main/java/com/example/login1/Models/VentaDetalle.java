@@ -6,9 +6,11 @@ public class VentaDetalle
     private String Cantidad;
     private String Precio;
     private String  Importe;
+    private String Domicilio;
     public VentaDetalle(){
 
     }
+
     public String getProductoId() {
         return ProductoId;
     }
@@ -17,7 +19,7 @@ public class VentaDetalle
         ProductoId = productoId;
     }
 
-    public String  getCantidad() {
+    public String getCantidad() {
         return Cantidad;
     }
 
@@ -41,5 +43,11 @@ public class VentaDetalle
         Importe = importe;
     }
 
+    public String getDomicilio() {
+        return Domicilio;
+    }
 
+    public void setDomicilio(String domicilio) {
+        Domicilio = domicilio;
+    }
 }

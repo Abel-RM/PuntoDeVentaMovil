@@ -9,8 +9,29 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
+import com.example.login1.Adapters.AdaptadorSurtidorA;
+import com.example.login1.Adapters.AdaptadorSurtidorT;
+import com.example.login1.Models.VentaResultado;
 import com.example.login1.R;
+import com.example.login1.Splash.SplashActivity;
+import com.example.login1.Utils.VolleySingleton;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +46,11 @@ public class FragmentVentasAsignadas extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static ListView list;
+    private static View v;
+    static AdaptadorSurtidorA adapterList;
+    private RequestQueue mQueue;
+    private static ArrayList<VentaResultado> ventaResultados = new ArrayList<>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -63,11 +89,15 @@ public class FragmentVentasAsignadas extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fragment_ventas_asignadas, container, false);
+        v=inflater.inflate(R.layout.fragment_fragment_ventas_asignadas, container, false);
+        mQueue = VolleySingleton.getInstance(v.getContext()).getRequestQueue();
+        ventaResultados.clear();
+        getVentas();
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -94,18 +124,54 @@ public class FragmentVentasAsignadas extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+
+    }
+    private void getVentas() {
+        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas?fecha1=01-01-2019&fecha2=12-30-2019";
+        final String tok="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtva2lfb3JsYW5kOTdAaG90bWFpbC5jb20iLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE1NzU1MTAwMzMsImV4cCI6MTU3NjExNDgzMywiaWF0IjoxNTc1NTEwMDMzfQ.SGfFFiU6W1m7Qw2AsvBPFdEsY6O1k_v6_YyeAo1NKTo";
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url,null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            Gson gson = new Gson();
+                            JSONArray array =response.getJSONArray("Data");
+                            for (int i=0;i<array.length();i++){
+                                JSONObject obj = array.getJSONObject(i);
+                                if (obj.getString("SurtidorId").equals(SplashActivity.userData.getId())&&(!obj.getString("EstadoVenta").equals("Entregado"))){
+                                    ventaResultados.add(gson.fromJson(obj.toString(), VentaResultado.class));
+                                }
+
+                            }
+                            list=  v.findViewById(R.id.list_fragment_asignadas);
+                            adapterList = new AdaptadorSurtidorA(v.getContext(),R.layout.custom_list_item,ventaResultados);
+                            list.setAdapter(adapterList);
+
+                        } catch (Exception e) {
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(v.getContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + tok);
+                return headers;
+            }
+        };
+        mQueue.add(jsonObjectRequest);
+
+    }
+    public static void actualizar(){
+        adapterList.notifyDataSetChanged();
     }
 }

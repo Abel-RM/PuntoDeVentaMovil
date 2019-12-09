@@ -13,24 +13,24 @@
         >
 
         <TextView
-            android:id="@+id/tx_nombre_cliente_todas"
+            android:id="@+id/tx_nombre_cliente_asignadas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:text="Nombre Cliente"/>
         <TextView
-            android:id="@+id/tx_fecha_venta_todas"
+            android:id="@+id/tx_fecha_venta_asignadas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Fecha Venta"/>
+            android:text="Fecha Venta p"/>
         <TextView
-            android:id="@+id/tx_nombre_vendedor_todas"
+            android:id="@+id/tx_nombre_vendedor_asignadas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Nombre Vendedor"/>
         <TextView
-            android:id="@+id/tx_direccion_todas"
+            android:id="@+id/tx_direccion_asignadas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -52,31 +52,31 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/btn_asignar_fecha_todas"
+                android:id="@+id/btn_firma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:text="Asignar Fecha"/>
+                android:text="Guardar firma"/>
 
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/btn_detalle_todas"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Detalle"/>
-            <Button
-                android:id="@+id/btn_guardar_todas"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Guardar"/>
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btn_detalle_asignadas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Detalle"/>
+                <Button
+                    android:id="@+id/btn_guardar_asignadas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Guardar"/>
 
 
 
-        </LinearLayout>
+            </LinearLayout>
 
 
         </LinearLayout>

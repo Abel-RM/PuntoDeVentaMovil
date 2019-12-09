@@ -7,15 +7,16 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
 import com.example.login1.Activities.ActivityVendedor;
 import com.example.login1.Activities.login;
 import com.example.login1.Adapters.AdaptadorSurtidorT;
@@ -38,11 +39,11 @@ public class FragmentTodasVentas extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private ListView list;
-    private View v;
+    private static ListView list;
+    private static View v;
     static AdaptadorSurtidorT adapterList;
     private RequestQueue mQueue;
-    private ArrayList<VentaResultado> ventaResultados = new ArrayList<>();
+    private static ArrayList<VentaResultado> ventaResultados = new ArrayList<>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -78,10 +79,9 @@ public class FragmentTodasVentas extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v=inflater.inflate(R.layout.fragment_fragment_todas_ventas, container, false);
+        ventaResultados.clear();
         mQueue = VolleySingleton.getInstance(v.getContext()).getRequestQueue();
         getVentas();
-
-
 
 
         return v;
@@ -132,6 +132,7 @@ public class FragmentTodasVentas extends Fragment {
                             JSONArray array =response.getJSONArray("Data");
                             for (int i=0;i<array.length();i++){
                                 JSONObject obj = array.getJSONObject(i);
+                                if (obj.getString("SurtidorId").equals("null"))
                                 ventaResultados.add(gson.fromJson(obj.toString(), VentaResultado.class));
                             }
                             list=  v.findViewById(R.id.list_fragment_todas);
@@ -157,6 +158,9 @@ public class FragmentTodasVentas extends Fragment {
         };
         mQueue.add(jsonObjectRequest);
 
+    }
+    public static void actualizar(){
+        adapterList.notifyDataSetChanged();
     }
 
 

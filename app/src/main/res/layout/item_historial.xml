@@ -5,23 +5,29 @@
 
 
     <TextView
-        android:id="@+id/tx_fecha_venta"
+        android:id="@+id/fecha_venta_historial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tipo_venta_historial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/fecha_entrega_historial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
-        android:id="@+id/tx_fecha_entrega"
+        android:id="@+id/total_historial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
-        android:id="@+id/tx_total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <TextView
-        android:id="@+id/tx_nombre"
+        android:id="@+id/nombre_cliente_historial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <Button
-        android:id="@+id/btn_detalle"
+        android:id="@+id/btn_detalle_historial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Detalle"/>

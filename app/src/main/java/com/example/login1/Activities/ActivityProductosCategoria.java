@@ -1,13 +1,25 @@
 package com.example.login1.Activities;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,50 +27,57 @@ import com.android.volley.Response;
 import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.JsonObjectRequest;
-import com.example.login1.Adapters.AdaptadorHistorial;
-import com.example.login1.Models.VentaResultado;
+import com.example.login1.Adapters.AdaptadorProductosCategoria;
+import com.example.login1.Models.Producto;
+import com.example.login1.Models.Venta;
+import com.example.login1.Models.VentaDetalleResultado;
 import com.example.login1.R;
-import com.example.login1.Splash.SplashActivity;
+import com.example.login1.Utils.Util;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import java.text.SimpleDateFormat;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 
-public class ActivityHistorial extends AppCompatActivity{
+public class ActivityProductosCategoria extends AppCompatActivity{
     private SharedPreferences prefs;
     private RequestQueue mQueue;
-    public static String Id;
-    //static ListView list;
-    //static AutoCompleteTextView editText;
-    //static ArrayList<Producto> productos=new ArrayList<>();
-    //static ArrayList<String> venta=new ArrayList<>();
-    //static ArrayList<VentaResultado> ventaSeleccionada = new ArrayList<VentaResultado>();
-    //static TextView txTotal;
-    static AdaptadorHistorial adapterList;
-    ArrayList<VentaResultado> ventas= new ArrayList<VentaResultado>();
     static ListView list;
+    static ArrayList<Producto> productos=new ArrayList<Producto>();
+    static ArrayList<String> prod=new ArrayList<>();
+    static AdaptadorProductosCategoria adapterList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_historial);
+        setContentView(R.layout.activity_productoscategoria);
         mQueue = VolleySingleton.getInstance(this).getRequestQueue();
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
-        list=  findViewById(R.id.list_historial);
-        getVentas();
+        Intent myIntent = getIntent(); // gets the previously created intent
+        String categoria = myIntent.getStringExtra("Categoria"); // will return "FirstKeyValue"
+        list=  findViewById(R.id.listproductoscategoria);
+        Log.i("Categoria",categoria);
+        getProductosXCategoria(categoria);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //actualizarLista(Util.auxiliar);
-        //Util.auxiliar.clear();
 
     }
 
@@ -68,7 +87,7 @@ public class ActivityHistorial extends AppCompatActivity{
         return super.onCreateOptionsMenu(menu);
     }
     public Context getContext(){
-        return ActivityHistorial.this;
+        return ActivityProductosCategoria.this;
     }
 
     @Override
@@ -95,17 +114,13 @@ public class ActivityHistorial extends AppCompatActivity{
     private void removeSharedPreferences(){
         prefs.edit().clear().apply();
 
-
     }
 
 
-    private void getVentas() {
-        ventas.clear();
-        String fechaInicioDeLosTiempos = "01/01/0001";
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat format1 = new SimpleDateFormat("MM-dd-yyyy");
-        String fechaActual = format1.format(cal.getTime());
-        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas?fecha1="+fechaInicioDeLosTiempos+"&&fecha2="+fechaActual;
+    private void getProductosXCategoria(String categoria) {
+        productos.clear();
+        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Productos/FiltrarProductos?categoria="+categoria;
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url,null, new Response.Listener<JSONObject>() {
                     @Override
@@ -116,22 +131,18 @@ public class ActivityHistorial extends AppCompatActivity{
                             JSONArray array =response.getJSONArray("Data");
                             for (int i=0;i<array.length();i++){
                                 JSONObject obj = array.getJSONObject(i);
-                                VentaResultado ventaResultado =gson.fromJson(obj.toString(), VentaResultado.class);
-                                if(ventaResultado.getIdVendedor().equals(SplashActivity.userData.getId())) {
-                                    ventas.add(ventaResultado);
-                                }
+                                productos.add(gson.fromJson(obj.toString(), Producto.class));
+                                prod.add(obj.getString("Nombre"));
                             }
-
-                            adapterList = new AdaptadorHistorial(ActivityHistorial.this,R.layout.custom_list_item,ventas);
+                            adapterList = new AdaptadorProductosCategoria(ActivityProductosCategoria.this,R.layout.custom_list_item,productos);
                             list.setAdapter(adapterList);
-
                         } catch (Exception e) {
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(ActivityHistorial.this,error.toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ActivityProductosCategoria.this,error.toString(),Toast.LENGTH_SHORT).show();
                     }
                 }){
             @Override
@@ -142,6 +153,5 @@ public class ActivityHistorial extends AppCompatActivity{
             }
         };
         mQueue.add(jsonObjectRequest);
-
     }
 }

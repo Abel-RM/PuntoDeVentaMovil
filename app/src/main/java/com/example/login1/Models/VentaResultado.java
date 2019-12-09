@@ -4,6 +4,8 @@ import java.util.Date;
 
 public class VentaResultado {
     private String Id;
+    private String VendedorId;
+    private String SurtidorId;
     private String Vendedor;
     private String Cliente;
     private String Surtidor;
@@ -22,7 +24,21 @@ public class VentaResultado {
     {
 
     }
+    public String getIdVendedor() {
+        return VendedorId;
+    }
 
+    public void setIdVendedor(String idVendedor) {
+        VendedorId = idVendedor;
+    }
+
+    public String getIdSurtidor() {
+        return SurtidorId;
+    }
+
+    public void setIdSurtidor(String idSurtidor) {
+        SurtidorId = idSurtidor;
+    }
     public String getId() {
         return Id;
     }

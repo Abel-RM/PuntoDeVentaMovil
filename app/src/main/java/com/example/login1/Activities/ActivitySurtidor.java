@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.login1.ui.main.SectionsPagerAdapter;
 
@@ -77,6 +78,6 @@ public class ActivitySurtidor extends AppCompatActivity implements FragmentTodas
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
+        Toast.makeText(getContext(),"aqui",Toast.LENGTH_SHORT).show();
     }
 }

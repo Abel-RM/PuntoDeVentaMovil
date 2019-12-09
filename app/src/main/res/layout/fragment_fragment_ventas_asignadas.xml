@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.FragmentVentasAsignadas">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <ListView
+        android:id="@+id/list_fragment_asignadas"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Ventas Asignadas" />
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
