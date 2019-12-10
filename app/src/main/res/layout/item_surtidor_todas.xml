@@ -56,6 +56,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
+                android:background="@color/colorPrimary"
+                android:layout_marginBottom="3dp"
+                android:textColor="#FDFDFD"
                 android:text="Asignar Fecha"/>
 
 
@@ -67,11 +70,16 @@
                 android:id="@+id/btn_detalle_todas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:textColor="#FDFDFD"
+                android:layout_marginRight="3dp"
                 android:text="Detalle"/>
             <Button
                 android:id="@+id/btn_guardar_todas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:textColor="#FDFDFD"
                 android:text="Guardar"/>
 
 

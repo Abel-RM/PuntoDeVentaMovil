@@ -16,6 +16,8 @@
         android:layout_marginTop="-6dp"
         android:layout_marginRight="-4dp"
         android:layout_marginLeft="-4dp"
+        android:background="@color/colorPrimary"
+        android:textColor="#FDFDFD"
         android:text="Nuevo Cliente" />
 
     <AutoCompleteTextView
@@ -70,6 +72,8 @@
         android:layout_marginRight="30dp"
         android:layout_marginTop="80dp"
         android:text="Siguiente"
+        android:background="@color/colorPrimary"
+        android:textColor="#FDFDFD"
         />
 
 

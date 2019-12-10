@@ -81,6 +81,7 @@ public  class AdaptadorSurtidorA extends BaseAdapter {
                 //Intent intent = new Intent (this,Firma.class);
                 //ActivityHistorial.Id=ventas.get(position).getId();
                 Firma.Id=ven.get(position).getId();
+                Firma.p=position;
                 context.startActivity(new Intent(context, Firma.class));
                 //context.startActivity(intent2);
                 //Intent intent = new Intent(v.getContext(), Firma.class);

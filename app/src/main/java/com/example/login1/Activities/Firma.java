@@ -29,6 +29,7 @@ import com.android.volley.request.SimpleMultiPartRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.login1.R;
 import com.example.login1.Utils.Util;
+import com.example.login1.ui.main.FragmentVentasAsignadas;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 
 import org.json.JSONException;
@@ -52,6 +53,7 @@ public class Firma extends AppCompatActivity {
     Bitmap bitmap;
     String URL = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas/EntregarPedido";
     public static String Id="";
+    public static int p=0;
     String path;
     private static final String IMAGE_DIRECTORY = "/signs";
 
@@ -103,6 +105,9 @@ public class Firma extends AppCompatActivity {
                             public void onResponse(String response) {
                                 Log.d("Response", response);
                                 Toast.makeText(getApplicationContext(),"Se guardo correctamente", Toast.LENGTH_LONG).show();
+                                FragmentVentasAsignadas.ventaResultados.remove(p);
+                                FragmentVentasAsignadas.actualizar();
+
                             }
                         }, new Response.ErrorListener() {
                     @Override

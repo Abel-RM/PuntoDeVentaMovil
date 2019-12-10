@@ -50,13 +50,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <Button
                 android:id="@+id/btn_firma"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:textColor="#FDFDFD"
                 android:textSize="18sp"
+                android:layout_marginBottom="3dp"
                 android:text="Guardar firma"/>
+
 
 
             <LinearLayout
@@ -67,12 +70,11 @@
                     android:id="@+id/btn_detalle_asignadas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:textColor="#FDFDFD"
+                    android:layout_marginRight="10dp"
                     android:text="Detalle"/>
-                <Button
-                    android:id="@+id/btn_guardar_asignadas"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Guardar"/>
+
 
 
 

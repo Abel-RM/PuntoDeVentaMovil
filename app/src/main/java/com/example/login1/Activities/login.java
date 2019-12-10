@@ -103,7 +103,7 @@ public class login extends AppCompatActivity {
 
 
     private void pantallaVendedor(){
-        Intent intent = new Intent(this, ActivityVendedor.class);
+        Intent intent = new Intent(this, ActivityMenuVendedor.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

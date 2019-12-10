@@ -70,8 +70,10 @@ public class AdaptadorHistorial extends BaseAdapter {
                 {   @Override
                     public void onClick(View view)
                     {
-                        ActivityHistorial.Id=ventas.get(position).getId();
-                       context.startActivity(new Intent(context, ActivityDetalleVenta.class));
+                        Intent intent = new Intent(v.getContext(),ActivityDetalleVenta.class);
+                        intent.putExtra("Id",ventas.get(position).getId());
+                        intent.putExtra("Total",String.valueOf(ventas.get(position).getTotal()));
+                       context.startActivity(intent);
                     }
                 }
         );

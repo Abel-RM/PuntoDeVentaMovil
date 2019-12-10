@@ -101,16 +101,18 @@ public class ActivityHistorial extends AppCompatActivity{
 
     private void getVentas() {
         ventas.clear();
-        String fechaInicioDeLosTiempos = "01/01/0001";
+        //String fechaInicioDeLosTiempos = "01/01/0001";
+        String fechaInicioDeLosTiempos = "01-01-2019";
+        String fechaFin= "01-01-2030";
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat format1 = new SimpleDateFormat("MM-dd-yyyy");
         String fechaActual = format1.format(cal.getTime());
-        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas?fecha1="+fechaInicioDeLosTiempos+"&&fecha2="+fechaActual;
+        //String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas?fecha1="+fechaInicioDeLosTiempos+"&&fecha2="+fechaFin;
+        String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas?fecha1=01/01/2019&fecha2=12/31/2019";
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url,null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
                             Gson gson = new Gson();
                             JSONArray array =response.getJSONArray("Data");
@@ -127,6 +129,7 @@ public class ActivityHistorial extends AppCompatActivity{
 
                         } catch (Exception e) {
                         }
+                        //Toast.makeText(getContext(),response.toString(),Toast.LENGTH_SHORT).show();
                     }
                 }, new Response.ErrorListener() {
                     @Override

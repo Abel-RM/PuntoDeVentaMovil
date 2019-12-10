@@ -1,5 +1,7 @@
 package com.example.login1.Activities;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -197,9 +199,15 @@ public class ActivityVentaPedido extends AppCompatActivity implements DialogClie
                 (Request.Method.POST, url,obj, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        ActivityVendedor.productos.clear();
+                        ActivityVendedor.prod.clear();
+                        ActivityVendedor.selectedProd.clear();
+                        ActivityVendedor.txTotal.setText("0.0");
+                        Intent intent = new Intent(ActivityVentaPedido.this,ActivityVendedor.class);
+                        startActivity(intent);
                         try {
                             count++;
-                            Toast.makeText(ActivityVentaPedido.this,String.valueOf(count),Toast.LENGTH_LONG).show();
+                            //Toast.makeText(ActivityVentaPedido.this,String.valueOf(count),Toast.LENGTH_LONG).show();
                             Toast.makeText(ActivityVentaPedido.this,"Venta guardada",Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
                             Toast.makeText(ActivityVentaPedido.this,"Algo salio mal",Toast.LENGTH_LONG).show();

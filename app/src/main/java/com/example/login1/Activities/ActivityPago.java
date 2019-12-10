@@ -153,6 +153,13 @@ public class ActivityPago extends AppCompatActivity  {
                     public void onResponse(JSONObject response) {
                         try {
                             Toast.makeText(ActivityPago.this,"Venta guardada",Toast.LENGTH_LONG).show();
+                            ActivityVendedor.productos.clear();
+                            ActivityVendedor.prod.clear();
+                            ActivityVendedor.selectedProd.clear();
+                            ActivityVendedor.txTotal.setText("0.0");
+                            Intent intent = new Intent(ActivityPago.this,ActivityVendedor.class);
+                            startActivity(intent);
+
                         } catch (Exception e) {
                             Toast.makeText(ActivityPago.this,"Algo salio mal",Toast.LENGTH_LONG).show();
                         }

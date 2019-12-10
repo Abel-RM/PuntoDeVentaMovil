@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
 import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,28 +21,15 @@ import com.android.volley.Response;
 import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.JsonObjectRequest;
-import com.bumptech.glide.util.CachedHashCodeArrayMap;
 import com.example.login1.Adapters.AdaptadorCatalogo;
 import com.example.login1.Models.Categoria;
-import com.example.login1.Models.VentaResultado;
 import com.example.login1.R;
-import com.example.login1.Splash.SplashActivity;
-import com.example.login1.Utils.Util;
 import com.example.login1.Utils.VolleySingleton;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -78,9 +64,7 @@ public class ActivityCatalogo extends AppCompatActivity{
 
         Iniciar una nueva actividad al presionar la foto
          */
-        Log.i("Categoria",categorias.get(position).getNombre());
                 Intent i = new Intent(ActivityCatalogo.this, ActivityProductosCategoria.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 i.putExtra("Categoria",categorias.get(position).getNombre());
                 //i.putExtra("position",position);
                 startActivity(i);

@@ -65,14 +65,6 @@ public  class AdaptadorProductosCategoria extends BaseAdapter {
         TextView stock = v.findViewById(R.id.stockProductoCategoria);
         stock.setText("Stock: "+productos.get(position).getStock());
 
-        Button agregar = v.findViewById(R.id.agregarACarrito);
-        agregar.setOnClickListener(new View.OnClickListener() {
-                                       @Override
-                                       public void onClick(View view) {
-                                           //Añadir a carrito
-                                       }
-                                   }
-        );
 
         ImageView img =  v.findViewById(R.id.imagenProductoCategoria);
         //int imgPosition= ActivityProductosCategoria.prod.indexOf(productos.get(position).getNombre());
