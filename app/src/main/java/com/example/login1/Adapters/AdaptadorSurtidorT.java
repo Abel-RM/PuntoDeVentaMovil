@@ -28,6 +28,7 @@ import com.example.login1.R;
 import com.example.login1.Splash.SplashActivity;
 import com.example.login1.Utils.VolleySingleton;
 import com.example.login1.ui.main.FragmentTodasVentas;
+import com.example.login1.ui.main.FragmentVentasAsignadas;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -127,6 +128,8 @@ public  class AdaptadorSurtidorT extends BaseAdapter  implements DatePickerDialo
 
 
 
+
+
         return v;
     }
     private void oyente(View view,int p){
@@ -179,8 +182,11 @@ public  class AdaptadorSurtidorT extends BaseAdapter  implements DatePickerDialo
                     @Override
                     public void onResponse(JSONObject response) {
                         Toast.makeText(v.getContext(),"Fecha guardada",Toast.LENGTH_LONG).show();
+                        VentaResultado venta=ven.get(position);
                         ven.remove(position);
                         FragmentTodasVentas.actualizar();
+                        FragmentVentasAsignadas.ventaResultados.add(venta);
+                        FragmentVentasAsignadas.actualizar();
                     }
                 }, new Response.ErrorListener() {
                     @Override

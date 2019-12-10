@@ -26,8 +26,14 @@ public class PlaceholderFragment extends Fragment {
     public static Fragment newInstance(int index) {
         Fragment fragment = null;
         switch (index){
-            case 1: fragment = new FragmentTodasVentas();break;
-            case 2: fragment = new FragmentVentasAsignadas();break;
+            case 1: fragment = new FragmentTodasVentas();
+            FragmentTodasVentas.actualizar();
+            FragmentVentasAsignadas.actualizar();
+            break;
+            case 2: fragment = new FragmentVentasAsignadas();
+            FragmentVentasAsignadas.actualizar();
+            FragmentTodasVentas.actualizar();
+            break;
         }
         return fragment;
     }

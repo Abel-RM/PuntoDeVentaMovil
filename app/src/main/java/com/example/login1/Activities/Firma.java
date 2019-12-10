@@ -24,12 +24,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
 import com.android.volley.request.SimpleMultiPartRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.login1.R;
+import com.example.login1.Utils.Util;
 import com.github.gcacace.signaturepad.views.SignaturePad;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,24 +38,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Firma extends AppCompatActivity {
-    private TextView textViewEmail;
-    private TextView textViewPassword;
-    private Button btnLogin;
-    private Switch switchRemember;
+
     private SharedPreferences prefs;
     public static boolean log=false;
     public static String UserToken="";
     private SignaturePad signaturePad;
     private Button saveButton, clearButton;
     Bitmap bitmap;
+    String URL = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas/EntregarPedido";
+    public static String Id="";
     String path;
-    String URL="";
     private static final String IMAGE_DIRECTORY = "/signs";
 
     @Override
@@ -62,10 +60,6 @@ public class Firma extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firma);
         prefs=getSharedPreferences("preferences", Context.MODE_PRIVATE);
-        //Toast.makeText(getApplicationContext(),getIntent().getExtras().getString("VentaId"), Toast.LENGTH_LONG).show();
-        try {
-            URL = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas/EntregarPedido?VentaId="+getIntent().getExtras().getString("VentaId");
-        }catch (Exception e){}
 
         signaturePad = (SignaturePad)findViewById(R.id.signaturePad);
         saveButton = (Button)findViewById(R.id.btnSave);
@@ -102,8 +96,8 @@ public class Firma extends AppCompatActivity {
             public void onClick(View v) {
                 bitmap = signaturePad.getSignatureBitmap();
                 path = saveImage(bitmap);
-                //Toast.makeText(getApplicationContext(),URL, Toast.LENGTH_LONG).show();
-                SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.PUT, URL,
+                Toast.makeText(getApplicationContext(),path, Toast.LENGTH_LONG).show();
+                SimpleMultiPartRequest smr = new SimpleMultiPartRequest(Request.Method.POST, URL,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
@@ -113,15 +107,17 @@ public class Firma extends AppCompatActivity {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        parseVolleyError(error);
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
                 //smr.addStringParam("param string", " data text");
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("Authorization", "bearer "+login.UserToken);
+                params.put("Authorization","bearer "+login.UserToken);
                 params.put("Content-Type","multipart/form-data");
-                smr.addFile("firma", path);
+                smr.addStringParam("VentaId",Id);
+                smr.addFile("Firma",path);
                 smr.setHeaders(params);
+
                 RequestQueue mRequestQueue = Volley.newRequestQueue(getApplicationContext());
                 mRequestQueue.add(smr);
             }
@@ -165,19 +161,5 @@ public class Firma extends AppCompatActivity {
         }
         return "";
 
-    }
-    public void parseVolleyError(VolleyError error) {
-        try {
-            String responseBody = new String(error.networkResponse.data, "utf-8");
-            JSONObject data = new JSONObject(responseBody);
-            JSONArray errors = data.getJSONArray("errors");
-            JSONObject jsonMessage = errors.getJSONObject(0);
-            String message = jsonMessage.getString("message");
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-        } catch (JSONException e) {
-            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-        } catch (UnsupportedEncodingException err) {
-            Toast.makeText(getApplicationContext(), err.getMessage(), Toast.LENGTH_LONG).show();
-        }
     }
 }

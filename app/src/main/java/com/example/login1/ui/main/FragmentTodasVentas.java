@@ -17,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.error.AuthFailureError;
 import com.android.volley.error.VolleyError;
 import com.android.volley.request.JsonObjectRequest;
+import com.bumptech.glide.util.Util;
 import com.example.login1.Activities.ActivityVendedor;
 import com.example.login1.Activities.login;
 import com.example.login1.Adapters.AdaptadorSurtidorT;
@@ -39,11 +40,11 @@ public class FragmentTodasVentas extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static ListView list;
+    private ListView list;
     private static View v;
     static AdaptadorSurtidorT adapterList;
     private RequestQueue mQueue;
-    private static ArrayList<VentaResultado> ventaResultados = new ArrayList<>();
+    public static  ArrayList<VentaResultado> ventaResultados = new ArrayList<>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -73,6 +74,7 @@ public class FragmentTodasVentas extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -120,7 +122,7 @@ public class FragmentTodasVentas extends Fragment {
 
     private void getVentas() {
         String url = "http://pvmovilbackend.eastus.azurecontainer.io/api/Ventas?fecha1=01-01-2019&fecha2=12-30-2019";
-        final String tok="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtva2lfb3JsYW5kOTdAaG90bWFpbC5jb20iLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE1NzU1MTAwMzMsImV4cCI6MTU3NjExNDgzMywiaWF0IjoxNTc1NTEwMDMzfQ.SGfFFiU6W1m7Qw2AsvBPFdEsY6O1k_v6_YyeAo1NKTo";
+        final String tok=login.UserToken;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url,null, new Response.Listener<JSONObject>() {
@@ -132,11 +134,14 @@ public class FragmentTodasVentas extends Fragment {
                             JSONArray array =response.getJSONArray("Data");
                             for (int i=0;i<array.length();i++){
                                 JSONObject obj = array.getJSONObject(i);
-                                if (obj.getString("SurtidorId").equals("null"))
-                                ventaResultados.add(gson.fromJson(obj.toString(), VentaResultado.class));
+                                String estado=obj.getString("EstadoVenta");
+                                String tipo=obj.getString("TipoVenta");
+                                if (tipo.equals("Pedido")&&estado.equals("No entregado")){
+                                    ventaResultados.add(gson.fromJson(obj.toString(), VentaResultado.class));
+                                }
+
                             }
                             list=  v.findViewById(R.id.list_fragment_todas);
-
                             adapterList = new AdaptadorSurtidorT(v.getContext(),R.layout.custom_list_item,ventaResultados);
                             list.setAdapter(adapterList);
 
@@ -160,7 +165,9 @@ public class FragmentTodasVentas extends Fragment {
 
     }
     public static void actualizar(){
-        adapterList.notifyDataSetChanged();
+        if (adapterList!=null) {
+            adapterList.notifyDataSetChanged();
+        }
     }
 
 

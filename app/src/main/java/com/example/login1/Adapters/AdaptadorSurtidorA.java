@@ -1,6 +1,5 @@
 package com.example.login1.Adapters;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -8,18 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.login1.Activities.ActivityDetalleVenta;
 import com.example.login1.Activities.Firma;
-import com.example.login1.Models.Venta;
 import com.example.login1.Models.VentaResultado;
 import com.example.login1.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public  class AdaptadorSurtidorA extends BaseAdapter {
     private Context context;
@@ -82,10 +78,15 @@ public  class AdaptadorSurtidorA extends BaseAdapter {
         btnFirma.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), Firma.class);
-                intent.putExtra("VentaId",ven.get(position).getId());
-                Toast.makeText(v.getContext(),ven.get(position).getEstadoVenta(),Toast.LENGTH_SHORT).show();
-                v.getContext().startActivity(intent);
+                //Intent intent = new Intent (this,Firma.class);
+                //ActivityHistorial.Id=ventas.get(position).getId();
+                Firma.Id=ven.get(position).getId();
+                context.startActivity(new Intent(context, Firma.class));
+                //context.startActivity(intent2);
+                //Intent intent = new Intent(v.getContext(), Firma.class);
+                //intent.putExtra("VentaId",ven.get(position).getId());
+                //Toast.makeText(v.getContext(),ven.get(position).getEstadoVenta(),Toast.LENGTH_SHORT).show();
+                ///v.getContext().startActivity(intent);
             }
         });
 
